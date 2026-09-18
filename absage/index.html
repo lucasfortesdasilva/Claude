@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Absage — ein Bewerbungssimulator. Jede Bewerbung wird beantwortet. In Sekunden. Mit einem echten Grund. A job application simulator for everyone being ghosted.">
+<meta name="description" content="Absage — a job application simulator in German and English. Every application gets answered in seconds, with the honest reason nobody ever gives you. Ein Bewerbungssimulator für alle, die geghostet werden.">
 <style>
   :root { color-scheme: light dark; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
   html, body { height: 100%; }
@@ -119,6 +119,34 @@
     background: var(--stamp);
     flex: none;
   }
+  .lang-switch {
+    display: flex;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    flex: none;
+  }
+  .lang-switch button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    padding: 5px 10px;
+    border: 0;
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .lang-switch button:hover { color: var(--ink); }
+  .lang-switch button:focus-visible { outline: 2px solid var(--seal); outline-offset: -2px; }
+  .lang-switch button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--ground);
+  }
+  .masthead-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
   .masthead-sub {
     font-family: var(--mono);
     font-size: 10.5px;
@@ -200,6 +228,7 @@
     min-width: 8px;
   }
   .spec dd { margin: 0; text-align: right; color: var(--ink); }
+  .spec.flag dd { color: var(--stamp); }
 
   .card-foot {
     margin-top: auto;
@@ -578,10 +607,16 @@
 
 <div class="shell">
   <header class="masthead">
-    <div class="wordmark">Absage</div>
+    <div class="masthead-row">
+      <div class="wordmark">Absage</div>
+      <div class="lang-switch" role="group" aria-label="Sprache / Language">
+        <button type="button" id="langDe" aria-pressed="true">DE</button>
+        <button type="button" id="langEn" aria-pressed="false">EN</button>
+      </div>
+    </div>
     <div class="masthead-sub">
-      Bewerbungsportal · Simulation<br>
-      Vorgangsnr. <span id="caseNo">2026-BE-04471</span>
+      <span id="portalLabel">Bewerbungsportal · Simulation</span><br>
+      <span id="caseLabel">Vorgangsnr.</span> <span id="caseNo">2026-BE-04471</span>
     </div>
   </header>
 
@@ -589,42 +624,42 @@
 
     <!-- ============ DECK ============ -->
     <section id="screenDeck" class="deck-wrap">
-      <p class="eyebrow" style="margin:0 0 12px">Offene Stellen · Berlin und Umgebung</p>
+      <p class="eyebrow" id="deckEyebrow" style="margin:0 0 12px">Offene Stellen · Berlin und Umgebung</p>
       <div class="deck" id="deck"></div>
 
       <div class="controls">
         <button class="btn" id="btnSkip" type="button">
-          Überspringen
-          <small>← Pfeiltaste links</small>
+          <span id="skipLabel">Überspringen</span>
+          <small id="skipHint">← Pfeiltaste links</small>
         </button>
         <button class="btn apply" id="btnApply" type="button">
-          Jetzt bewerben
-          <small>Pfeiltaste rechts →</small>
+          <span id="applyLabel">Jetzt bewerben</span>
+          <small id="applyHint">Pfeiltaste rechts →</small>
         </button>
       </div>
 
       <div class="mode">
         <input type="checkbox" id="realismMode">
         <label for="realismMode">
-          <b>Realismus-Modus</b>
-          <span>Statt einer Absage erhalten Sie, was Sie sonst erhalten: nichts. 90 Tage in 9 Sekunden.</span>
+          <b id="modeTitle">Realismus-Modus</b>
+          <span id="modeDesc">Statt einer Absage erhalten Sie, was Sie sonst erhalten: nichts. 90 Tage in 9 Sekunden.</span>
         </label>
       </div>
 
       <dl class="ledger">
-        <div class="stat"><dt>Bewerbungen</dt><dd id="statSent">0</dd></div>
-        <div class="stat"><dt>Antworten</dt><dd id="statReplies">0</dd></div>
-        <div class="stat accent"><dt>Geghostet</dt><dd id="statGhosted">0</dd></div>
-        <div class="stat"><dt>⌀ Antwortzeit</dt><dd id="statTime">—</dd></div>
+        <div class="stat"><dt id="lblSent">Bewerbungen</dt><dd id="statSent">0</dd></div>
+        <div class="stat"><dt id="lblReplies">Antworten</dt><dd id="statReplies">0</dd></div>
+        <div class="stat accent"><dt id="lblGhosted">Geghostet</dt><dd id="statGhosted">0</dd></div>
+        <div class="stat"><dt id="lblTime">⌀ Antwortzeit</dt><dd id="statTime">—</dd></div>
       </dl>
     </section>
 
     <!-- ============ PENDING ============ -->
     <section id="screenPending" class="pending" hidden>
-      <p class="eyebrow">Eingangsbestätigung · automatisch generiert</p>
-      <h2 id="pendingRole">Ihre Bewerbung ist eingegangen.</h2>
-      <p id="pendingFirm">Nordlicht Retail Group GmbH</p>
-      <div class="clock"><span id="clockVal">0,0</span><span> Sek.</span></div>
+      <p class="eyebrow" id="pendingEyebrow">Eingangsbestätigung · automatisch generiert</p>
+      <h2 id="pendingRole">—</h2>
+      <p id="pendingFirm">—</p>
+      <div class="clock"><span id="clockVal">0,0</span><span id="clockUnit"> Sek.</span></div>
       <div class="bar"><i id="pendingBar"></i></div>
     </section>
 
@@ -632,44 +667,41 @@
     <section id="screenLetter" hidden>
       <article class="letter">
         <div class="letter-head">
-          <div class="from" id="letterFrom">Nordlicht Retail Group GmbH<br>Personalabteilung</div>
+          <div class="from" id="letterFrom">—</div>
           <div class="letter-meta">
-            Berlin, <span id="letterDate">17. September 2026</span><br>
-            Antwortzeit: <span id="letterSpeed">3,4 Sek.</span>
+            <span id="letterCity">Berlin,</span> <span id="letterDate">—</span><br>
+            <span id="letterSpeedLabel">Antwortzeit:</span> <span id="letterSpeed">—</span>
           </div>
         </div>
 
-        <p class="betreff" id="letterBetreff">Ihre Bewerbung als Senior Manager Retail Marketing (m/w/d)</p>
+        <p class="betreff" id="letterBetreff">—</p>
 
-        <p>Sehr geehrte:r Bewerber:in,</p>
-        <p>vielen Dank für Ihr Interesse an einer Tätigkeit in unserem Hause und für die Zeit, die Sie in Ihre Unterlagen investiert haben. Wir haben Ihre Bewerbung tatsächlich gelesen.</p>
-        <p>Wir müssen Ihnen mitteilen, dass wir uns gegen Sie entschieden haben. Aus Gründen, die Ihnen in der Realität niemand nennen würde, nennen wir sie Ihnen hier:</p>
+        <p id="letterP0">Sehr geehrte:r Bewerber:in,</p>
+        <p id="letterP1">vielen Dank für Ihr Interesse an einer Tätigkeit in unserem Hause und für die Zeit, die Sie in Ihre Unterlagen investiert haben. Wir haben Ihre Bewerbung tatsächlich gelesen.</p>
+        <p id="letterP2">Wir müssen Ihnen mitteilen, dass wir uns gegen Sie entschieden haben. Aus Gründen, die Ihnen in der Realität niemand nennen würde, nennen wir sie Ihnen hier:</p>
 
         <blockquote class="reason">
-          <q id="reasonDe">Die Stelle war intern bereits vergeben, bevor wir sie ausgeschrieben haben.</q>
-          <span class="gloss" id="reasonEn">The role was filled internally before we posted it.</span>
+          <q id="reasonMain">—</q>
+          <span class="gloss" id="reasonGloss">—</span>
         </blockquote>
 
-        <p>Diese Entscheidung ist keine Bewertung Ihrer Person, Ihrer Qualifikation oder Ihres Werdegangs. Das ist sie in der Regel nie. Wir wünschen Ihnen für Ihren weiteren beruflichen Werdegang alles Gute.</p>
+        <p id="letterP3">Diese Entscheidung ist keine Bewertung Ihrer Person, Ihrer Qualifikation oder Ihres Werdegangs. Das ist sie in der Regel nie. Wir wünschen Ihnen für Ihren weiteren beruflichen Werdegang alles Gute.</p>
 
         <div class="sig-row">
           <div class="sig">
-            <div class="name" id="sigName">M. Brandhorst</div>
-            <div class="dept">Personalabteilung · <span id="sigFirm">Nordlicht Retail Group GmbH</span></div>
+            <div class="name" id="sigName">—</div>
+            <div class="dept"><span id="sigDept">Personalabteilung</span> · <span id="sigFirm">—</span></div>
           </div>
-          <div class="stamp">Absage<em id="stampDate">17.09.2026</em></div>
+          <div class="stamp"><span id="stampWord">Absage</span><em id="stampDate">—</em></div>
         </div>
 
-        <p class="disclaimer">
-          Simulation. Dieses Unternehmen existiert nicht. Diese Absage auch nicht. Das Gefühl schon.<br>
-          Simulation. This company does not exist. Neither does this rejection. The feeling does.
-        </p>
+        <p class="disclaimer" id="letterDisclaimer"></p>
       </article>
 
       <div class="controls">
         <button class="btn apply wide" id="btnNext" type="button">
-          Weiter bewerben
-          <small>Es hilft ja nichts</small>
+          <span id="nextLabel">Weiter bewerben</span>
+          <small id="nextHint">Es hilft ja nichts</small>
         </button>
       </div>
     </section>
@@ -677,15 +709,15 @@
     <!-- ============ GHOST ============ -->
     <section id="screenGhost" hidden>
       <div class="ghost">
-        <p class="eyebrow">Realismus-Modus · 90 Tage im Zeitraffer</p>
-        <h2 id="ghostRole">Senior Manager Retail Marketing (m/w/d)</h2>
-        <p class="lede" id="ghostFirm">Nordlicht Retail Group GmbH · beworben am 17. September 2026</p>
+        <p class="eyebrow" id="ghostEyebrow">Realismus-Modus · 90 Tage im Zeitraffer</p>
+        <h2 id="ghostRole">—</h2>
+        <p class="lede" id="ghostFirm">—</p>
         <ol class="timeline" id="timeline"></ol>
       </div>
       <div class="controls">
         <button class="btn wide" id="btnGhostNext" type="button" disabled>
-          Weiter
-          <small>Bitte warten Sie</small>
+          <span id="ghostNextLabel">Weiter</span>
+          <small id="ghostNextHint">Bitte warten Sie</small>
         </button>
       </div>
     </section>
@@ -693,15 +725,15 @@
     <!-- ============ TRUTH ============ -->
     <section id="screenTruth" hidden>
       <div class="truth">
-        <p class="eyebrow">Vorgang abgeschlossen</p>
-        <h2 id="truthHead">Sie haben hier in vier Minuten mehr Antworten bekommen als draußen in einem halben Jahr.</h2>
-        <p id="truthBody">Das war der Witz. Er ist nicht besonders lustig.</p>
-        <p class="gloss">You just got more replies in four minutes than the real market gave you in six months. That was the joke. It isn't very funny.</p>
-        <p>In Deutschland schweigen Arbeitgeber nicht aus Faulheit. Eine begründete Absage ist nach dem AGG ein Beweismittel — Schweigen ist die juristisch sichere Variante. Das Problem ist gebaut. Man kann es also auch anders bauen.</p>
+        <p class="eyebrow" id="truthEyebrow">Vorgang abgeschlossen</p>
+        <h2 id="truthHead">—</h2>
+        <p id="truthBody">—</p>
+        <p class="gloss" id="truthGloss">—</p>
+        <p id="truthAgg">—</p>
         <div class="controls">
           <button class="btn wide" id="btnRestart" type="button">
-            Von vorn anfangen
-            <small>Wie im echten Leben</small>
+            <span id="restartLabel">Von vorn anfangen</span>
+            <small id="restartHint">Wie im echten Leben</small>
           </button>
         </div>
       </div>
@@ -709,174 +741,268 @@
 
   </main>
 
-  <footer class="colophon">
-    Absage · Ein Bewerbungssimulator. Alle Unternehmen, Personen und Absagen sind frei erfunden.<br>
-    Jede Ähnlichkeit mit Ihrem Posteingang ist beabsichtigt.
-  </footer>
+  <footer class="colophon" id="colophon"></footer>
 </div>
-
 <script>
 (function () {
   "use strict";
 
+  /* =======================================================================
+     Interface copy. Every visible string exists in both languages; the
+     letter is the one place where both appear at once, because the gap
+     between the two is the joke.
+     ======================================================================= */
+  var UI = {
+    de: {
+      portal: "Bewerbungsportal · Simulation",
+      caseLabel: "Vorgangsnr.",
+      deckEyebrow: "Offene Stellen · Berlin und Umgebung",
+      skip: "Überspringen",
+      skipHint: "← Pfeiltaste links",
+      apply: "Jetzt bewerben",
+      applyHint: "Pfeiltaste rechts →",
+      modeTitle: "Realismus-Modus",
+      modeDesc: "Statt einer Absage erhalten Sie, was Sie sonst erhalten: nichts. 90 Tage in 9 Sekunden.",
+      lblSent: "Bewerbungen",
+      lblReplies: "Antworten",
+      lblGhosted: "Geghostet",
+      lblTime: "⌀ Antwortzeit",
+      pendingEyebrow: "Eingangsbestätigung · automatisch generiert",
+      clockUnit: " Sek.",
+      letterCity: "Berlin,",
+      speedLabel: "Antwortzeit:",
+      dept: "Personalabteilung",
+      stampWord: "Absage",
+      betreff: function (role) { return "Ihre Bewerbung als " + role; },
+      p0: "Sehr geehrte:r Bewerber:in,",
+      p1: "vielen Dank für Ihr Interesse an einer Tätigkeit in unserem Hause und für die Zeit, die Sie in Ihre Unterlagen investiert haben. Wir haben Ihre Bewerbung tatsächlich gelesen.",
+      p2: "Wir müssen Ihnen mitteilen, dass wir uns gegen Sie entschieden haben. Aus Gründen, die Ihnen in der Realität niemand nennen würde, nennen wir sie Ihnen hier:",
+      p3: "Diese Entscheidung ist keine Bewertung Ihrer Person, Ihrer Qualifikation oder Ihres Werdegangs. Das ist sie in der Regel nie. Wir wünschen Ihnen für Ihren weiteren beruflichen Werdegang alles Gute.",
+      disclaimer: "Simulation. Dieses Unternehmen existiert nicht. Diese Absage auch nicht. Das Gefühl schon.<br>Simulation. This company does not exist. Neither does this rejection. The feeling does.",
+      next: "Weiter bewerben",
+      nextHint: "Es hilft ja nichts",
+      ghostEyebrow: "Realismus-Modus · 90 Tage im Zeitraffer",
+      appliedOn: function (d) { return " · beworben am " + d; },
+      ghostNext: "Weiter",
+      ghostWait: "Bitte warten Sie",
+      ghostDone: "Sie haben 90 Tage verloren",
+      truthEyebrow: "Vorgang abgeschlossen",
+      truthHead: function (n) {
+        return "Sie haben hier " + n + " Antworten bekommen. Draußen waren es in diesem Jahr vermutlich weniger.";
+      },
+      truthBody: "Das war der Witz. Er ist nicht besonders lustig.",
+      truthGloss: "You just got more replies here than the real market gave you this year. That was the joke. It isn't very funny.",
+      truthAgg: "In Deutschland schweigen Arbeitgeber nicht aus Faulheit. Eine begründete Absage ist nach dem AGG ein potenzielles Beweismittel — Schweigen ist die juristisch sichere Variante. Das Problem ist gebaut. Man kann es also auch anders bauen.",
+      restart: "Von vorn anfangen",
+      restartHint: "Wie im echten Leben",
+      colophon: "Absage · Ein Bewerbungssimulator. Alle Unternehmen, Personen und Absagen sind frei erfunden.<br>Jede Ähnlichkeit mit Ihrem Posteingang ist beabsichtigt.",
+      specs: { place: "Ort", pay: "Gehalt", exp: "Erfahrung", lang: "Sprache" },
+      appsWord: "Bewerbungen",
+      verdictYes: "Bewerben",
+      verdictNo: "Weg damit"
+    },
+    en: {
+      portal: "Application portal · simulation",
+      caseLabel: "Case no.",
+      deckEyebrow: "Open positions · Berlin and surroundings",
+      skip: "Skip",
+      skipHint: "← Left arrow key",
+      apply: "Apply now",
+      applyHint: "Right arrow key →",
+      modeTitle: "Realism mode",
+      modeDesc: "Instead of a rejection you get what you normally get: nothing. 90 days in 9 seconds.",
+      lblSent: "Applications",
+      lblReplies: "Replies",
+      lblGhosted: "Ghosted",
+      lblTime: "⌀ Reply time",
+      pendingEyebrow: "Receipt of application · automatically generated",
+      clockUnit: " sec.",
+      letterCity: "Berlin,",
+      speedLabel: "Reply time:",
+      dept: "Human Resources",
+      stampWord: "Rejected",
+      betreff: function (role) { return "Your application for " + role; },
+      p0: "Dear applicant,",
+      p1: "thank you for your interest in our company and for the time you invested in your documents. We did in fact read your application.",
+      p2: "We must inform you that we have decided against you. For reasons nobody would ever give you in real life, which we will now give you:",
+      p3: "This decision is not a judgement of you, your qualifications or your career. It rarely ever is. We wish you all the best for your professional future — or, as you will read it three hundred more times this year: wir wünschen Ihnen für Ihren weiteren beruflichen Werdegang alles Gute.",
+      disclaimer: "Simulation. This company does not exist. Neither does this rejection. The feeling does.<br>Simulation. Dieses Unternehmen existiert nicht. Diese Absage auch nicht. Das Gefühl schon.",
+      next: "Keep applying",
+      nextHint: "Not that it helps",
+      ghostEyebrow: "Realism mode · 90 days at speed",
+      appliedOn: function (d) { return " · applied on " + d; },
+      ghostNext: "Continue",
+      ghostWait: "Please wait",
+      ghostDone: "You have lost 90 days",
+      truthEyebrow: "Case closed",
+      truthHead: function (n) {
+        return "You got " + n + " replies here. Out there this year, it was probably fewer.";
+      },
+      truthBody: "That was the joke. It isn't especially funny.",
+      truthGloss: "Sie haben hier mehr Antworten bekommen als draußen. Das war der Witz. Er ist nicht besonders lustig.",
+      truthAgg: "German employers don't stay silent out of laziness. Under the AGG — the General Equal Treatment Act — a stated reason for rejection is potential evidence in a discrimination claim, and applicants have two months to file. Silence is the legally safe option. The problem is built. Which means it can be built differently.",
+      restart: "Start over",
+      restartHint: "Just like real life",
+      colophon: "Absage · A job application simulator. All companies, people and rejections are fictional.<br>Any resemblance to your actual inbox is entirely intended.",
+      specs: { place: "Location", pay: "Salary", exp: "Experience", lang: "Language" },
+      appsWord: "applicants",
+      verdictYes: "Apply",
+      verdictNo: "Bin it"
+    }
+  };
+
+  /* =======================================================================
+     Listings. Company names stay German in both languages, because they
+     would. The language requirement is flagged wherever an English-language
+     ad demands near-native German — which is most of them.
+     ======================================================================= */
   var JOBS = [
     {
-      firm: "Nordlicht Retail Group GmbH",
-      role: "Senior Manager Retail Marketing (m/w/d)",
-      place: "Berlin-Mitte · 4 Tage vor Ort",
-      pay: "Wettbewerbsfähig",
-      lang: "Deutsch C2 (verhandlungssicher)",
-      exp: "8–10 Jahre",
-      perks: "Obstkorb, Kickertisch, Duzkultur, „flache Hierarchien“",
-      posted: "vor 4 Monaten",
-      apps: 847,
-      sig: "M. Brandhorst"
+      firm: "Nordlicht Retail Group GmbH", apps: 847, sig: "M. Brandhorst", flagLang: true,
+      de: { role: "Senior Manager Retail Marketing (m/w/d)", place: "Berlin-Mitte · 4 Tage vor Ort",
+            pay: "Wettbewerbsfähig", exp: "8–10 Jahre", lang: "Deutsch C2 (verhandlungssicher)",
+            perks: "Obstkorb, Kickertisch, Duzkultur, „flache Hierarchien“", posted: "vor 4 Monaten" },
+      en: { role: "Senior Manager Retail Marketing (m/f/d)", place: "Berlin-Mitte · 4 days on site",
+            pay: "Competitive", exp: "8–10 years", lang: "German C2 — though this ad is in English",
+            perks: "Fruit basket, foosball table, first-name basis, “flat hierarchies”", posted: "4 months ago" }
     },
     {
-      firm: "Synergiewerk Berlin GmbH & Co. KG",
-      role: "Head of Brand Experience (m/w/d)",
-      place: "Hybrid · 2 Tage Homeoffice, verhandelbar (nicht verhandelbar)",
-      pay: "Nach Vereinbarung",
-      lang: "Deutsch C1, Englisch fließend",
-      exp: "Mind. 12 Jahre",
-      perks: "Purpose-getriebenes Umfeld, Hund im Büro, kein Budget",
-      posted: "vor 7 Wochen",
-      apps: 1204,
-      sig: "Dr. K. Reuter-Lang"
+      firm: "Synergiewerk Berlin GmbH & Co. KG", apps: 1204, sig: "Dr. K. Reuter-Lang", flagLang: true,
+      de: { role: "Head of Brand Experience (m/w/d)", place: "Hybrid · 2 Tage Homeoffice, verhandelbar (nicht verhandelbar)",
+            pay: "Nach Vereinbarung", exp: "Mind. 12 Jahre", lang: "Deutsch C1, Englisch fließend",
+            perks: "Purpose-getriebenes Umfeld, Hund im Büro, kein Budget", posted: "vor 7 Wochen" },
+      en: { role: "Head of Brand Experience (m/f/d)", place: "Hybrid · 2 days remote, negotiable (not negotiable)",
+            pay: "By arrangement", exp: "Min. 12 years", lang: "German C1, English fluent — meetings switch to German at minute four",
+            perks: "Purpose-driven environment, office dog, no budget", posted: "7 weeks ago" }
     },
     {
-      firm: "Kaufhaus Morgenrot AG",
-      role: "Junior Marketing Manager (m/w/d)",
-      place: "Berlin-Tempelhof · Vollzeit",
-      pay: "38.000 € p. a.",
-      lang: "Deutsch Muttersprache",
-      exp: "10+ Jahre zwingend erforderlich",
-      perks: "Personalrabatt 15 %, Jobticket (anteilig)",
-      posted: "vor 5 Monaten",
-      apps: 2310,
-      sig: "S. Ohlendorf"
+      firm: "Kaufhaus Morgenrot AG", apps: 2310, sig: "S. Ohlendorf", flagLang: true,
+      de: { role: "Junior Marketing Manager (m/w/d)", place: "Berlin-Tempelhof · Vollzeit",
+            pay: "38.000 € p. a.", exp: "10+ Jahre zwingend erforderlich", lang: "Deutsch Muttersprache",
+            perks: "Personalrabatt 15 %, Jobticket (anteilig)", posted: "vor 5 Monaten" },
+      en: { role: "Junior Marketing Manager (m/f/d)", place: "Berlin-Tempelhof · full time",
+            pay: "€38,000 p.a.", exp: "10+ years mandatory", lang: "German native speaker — no, C2 is not enough",
+            perks: "15% staff discount, transit pass (partial)", posted: "5 months ago" }
     },
     {
-      firm: "Kreuzwerk Consumer Brands GmbH",
-      role: "Director Consumer Insights (m/w/d)",
-      place: "Berlin-Neukölln · 5 Tage vor Ort",
-      pay: "Wettbewerbsfähig",
-      lang: "Deutsch C2, weitere Sprachen von Vorteil (nicht wirklich)",
-      exp: "15 Jahre, davon 5 im DACH-Raum",
-      perks: "Agiles Mindset, Obst, Verantwortung ab Tag 1",
-      posted: "vor 3 Monaten",
-      apps: 663,
-      sig: "T. Hübner"
+      firm: "Meridian International Brands SE", apps: 4188, sig: "P. Lindqvist", flagLang: true,
+      de: { role: "Global Brand Manager (all genders)", place: "Berlin-Mitte · internationales Team",
+            pay: "Wettbewerbsfähig", exp: "8+ Jahre, globale Markenführung",
+            lang: "Deutsch C2 — trotz englischer Ausschreibung und englischsprachigem Team",
+            perks: "„We speak English here!“ (Der Arbeitsvertrag ist auf Deutsch)", posted: "vor 3 Wochen" },
+      en: { role: "Global Brand Manager (all genders)", place: "Berlin-Mitte · international team",
+            pay: "Competitive", exp: "8+ years in global brand management",
+            lang: "German C2 required — this ad, the team and the interview are in English",
+            perks: "“We speak English here!” (Your contract will not be)", posted: "3 weeks ago" }
     },
     {
-      firm: "Glückauf Naturkosmetik GmbH",
-      role: "Werkstudent:in Markenkommunikation",
-      place: "Berlin-Wedding · 20 Std./Woche",
-      pay: "13,50 €/Std.",
-      lang: "Deutsch C2",
-      exp: "Erste Führungserfahrung erwünscht",
-      perks: "Sinnstiftende Arbeit, Yoga donnerstags, Wasser umsonst",
-      posted: "vor 6 Wochen",
-      apps: 1891,
-      sig: "A. Pflüger"
+      firm: "Kreuzwerk Consumer Brands GmbH", apps: 663, sig: "T. Hübner", flagLang: true,
+      de: { role: "Director Consumer Insights (m/w/d)", place: "Berlin-Neukölln · 5 Tage vor Ort",
+            pay: "Wettbewerbsfähig", exp: "15 Jahre, davon 5 im DACH-Raum",
+            lang: "Deutsch C2, weitere Sprachen von Vorteil (nicht wirklich)",
+            perks: "Agiles Mindset, Obst, Verantwortung ab Tag 1", posted: "vor 3 Monaten" },
+      en: { role: "Director Consumer Insights (m/f/d)", place: "Berlin-Neukölln · 5 days on site",
+            pay: "Competitive", exp: "15 years, 5 of them in the DACH region",
+            lang: "German C2; further languages an advantage (they are not)",
+            perks: "Agile mindset, fruit, ownership from day one", posted: "3 months ago" }
     },
     {
-      firm: "Textilwerk Spandau GmbH",
-      role: "Teamleitung Category Management (m/w/d)",
-      place: "Berlin-Spandau · kein Homeoffice",
-      pay: "Attraktives Gehaltspaket",
-      lang: "Deutsch verhandlungssicher",
-      exp: "10 Jahre Einzelhandel",
-      perks: "Betriebskantine, 28 Urlaubstage, Weihnachtsfeier",
-      posted: "vor 9 Monaten",
-      apps: 402,
-      sig: "R. Dettmann"
+      firm: "Glückauf Naturkosmetik GmbH", apps: 1891, sig: "A. Pflüger", flagLang: true,
+      de: { role: "Werkstudent:in Markenkommunikation", place: "Berlin-Wedding · 20 Std./Woche",
+            pay: "13,50 €/Std.", exp: "Erste Führungserfahrung erwünscht", lang: "Deutsch C2",
+            perks: "Sinnstiftende Arbeit, Yoga donnerstags, Wasser umsonst", posted: "vor 6 Wochen" },
+      en: { role: "Working Student, Brand Communications", place: "Berlin-Wedding · 20 hrs/week",
+            pay: "€13.50/hr", exp: "Some leadership experience preferred", lang: "German C2",
+            perks: "Meaningful work, yoga on Thursdays, free water", posted: "6 weeks ago" }
     },
     {
-      firm: "PLATTFORM Labs GmbH",
-      role: "Growth Marketing Lead (all genders)",
-      place: "Remote-first (Berlin-Pflicht)",
-      pay: "Equity-lastig",
-      lang: "Englisch, aber Meetings auf Deutsch",
-      exp: "„Hands-on Mentalität“",
-      perks: "Unbegrenzter Urlaub (niemand nimmt ihn), MacBook",
-      posted: "vor 2 Monaten",
-      apps: 3057,
-      sig: "J. Weiß"
+      firm: "Textilwerk Spandau GmbH", apps: 402, sig: "R. Dettmann", flagLang: true,
+      de: { role: "Teamleitung Category Management (m/w/d)", place: "Berlin-Spandau · kein Homeoffice",
+            pay: "Attraktives Gehaltspaket", exp: "10 Jahre Einzelhandel", lang: "Deutsch verhandlungssicher",
+            perks: "Betriebskantine, 28 Urlaubstage, Weihnachtsfeier", posted: "vor 9 Monaten" },
+      en: { role: "Team Lead, Category Management (m/f/d)", place: "Berlin-Spandau · no remote work",
+            pay: "Attractive salary package", exp: "10 years in retail", lang: "German, business fluent",
+            perks: "Staff canteen, 28 holiday days, Christmas party", posted: "9 months ago" }
     },
     {
-      firm: "Deutsche Einzelhandels-Allianz e. V.",
-      role: "Referent:in Handelsmarketing (m/w/d)",
-      place: "Berlin-Charlottenburg · TVöD E 13",
-      pay: "Nach Tarif",
-      lang: "Deutsch Muttersprache zwingend",
-      exp: "Abgeschlossenes Hochschulstudium",
-      perks: "Sicherer Arbeitsplatz, Fortbildung, Faxgerät",
-      posted: "vor 11 Monaten",
-      apps: 178,
-      sig: "Dr. H. Vollmer"
+      firm: "PLATTFORM Labs GmbH", apps: 3057, sig: "J. Weiß", flagLang: true,
+      de: { role: "Growth Marketing Lead (all genders)", place: "Remote-first (Berlin-Pflicht)",
+            pay: "Equity-lastig", exp: "„Hands-on Mentalität“", lang: "Englisch — aber alle Meetings auf Deutsch",
+            perks: "Unbegrenzter Urlaub (niemand nimmt ihn), MacBook", posted: "vor 2 Monaten" },
+      en: { role: "Growth Marketing Lead (all genders)", place: "Remote-first (must live in Berlin)",
+            pay: "Equity-heavy", exp: "“Hands-on mentality”", lang: "English — but every meeting is in German",
+            perks: "Unlimited holiday (nobody takes it), MacBook", posted: "2 months ago" }
     },
     {
-      firm: "VELOCITA Mobility SE",
-      role: "Senior Brand Manager DACH (m/w/d)",
-      place: "Berlin-Friedrichshain · 3 Tage vor Ort",
-      pay: "Wettbewerbsfähig",
-      lang: "Deutsch C2, Englisch C1",
-      exp: "10+ Jahre FMCG oder Consumer Electronics",
-      perks: "Jobrad, Urban Sports Club, „wir sind wie eine Familie“",
-      posted: "vor 5 Wochen",
-      apps: 1442,
-      sig: "C. Ammersbach"
+      firm: "Deutsche Einzelhandels-Allianz e. V.", apps: 178, sig: "Dr. H. Vollmer", flagLang: true,
+      de: { role: "Referent:in Handelsmarketing (m/w/d)", place: "Berlin-Charlottenburg · TVöD E 13",
+            pay: "Nach Tarif", exp: "Abgeschlossenes Hochschulstudium", lang: "Deutsch Muttersprache zwingend",
+            perks: "Sicherer Arbeitsplatz, Fortbildung, Faxgerät", posted: "vor 11 Monaten" },
+      en: { role: "Officer, Retail Marketing (m/f/d)", place: "Berlin-Charlottenburg · public sector pay grade E 13",
+            pay: "Per collective agreement", exp: "Completed university degree",
+            lang: "German native speaker, mandatory", perks: "Job security, training, fax machine", posted: "11 months ago" }
     },
     {
-      firm: "Möbelhaus Zukunft GmbH",
-      role: "Leitung Marketing & Kommunikation (m/w/d)",
-      place: "Brandenburg an der Havel · Umzug erwartet",
-      pay: "Verhandelbar",
-      lang: "Deutsch C2",
-      exp: "Mind. 8 Jahre",
-      perks: "Firmenwagen (nach 2 Jahren), Kantine, Parkplatz",
-      posted: "vor 8 Monaten",
-      apps: 96,
-      sig: "B. Krolow"
+      firm: "VELOCITA Mobility SE", apps: 1442, sig: "C. Ammersbach", flagLang: true,
+      de: { role: "Senior Brand Manager DACH (m/w/d)", place: "Berlin-Friedrichshain · 3 Tage vor Ort",
+            pay: "Wettbewerbsfähig", exp: "10+ Jahre FMCG oder Consumer Electronics", lang: "Deutsch C2, Englisch C1",
+            perks: "Jobrad, Urban Sports Club, „wir sind wie eine Familie“", posted: "vor 5 Wochen" },
+      en: { role: "Senior Brand Manager DACH (m/f/d)", place: "Berlin-Friedrichshain · 3 days on site",
+            pay: "Competitive", exp: "10+ years in FMCG or consumer electronics", lang: "German C2, English C1",
+            perks: "Company bike, gym card, “we're like a family here”", posted: "5 weeks ago" }
     },
     {
-      firm: "Hanseatische Konsumgüter AG",
-      role: "Head of Retail Excellence (m/w/d)",
-      place: "Hamburg · Berlin möglich (ist es nicht)",
-      pay: "Wettbewerbsfähig",
-      lang: "Deutsch verhandlungssicher",
-      exp: "12 Jahre, Konzernerfahrung Pflicht",
-      perks: "Deutschlandticket, Gesundheitsbudget, Obstkorb",
-      posted: "vor 3 Wochen",
-      apps: 728,
-      sig: "F. Oldenburg"
+      firm: "Möbelhaus Zukunft GmbH", apps: 96, sig: "B. Krolow", flagLang: true,
+      de: { role: "Leitung Marketing & Kommunikation (m/w/d)", place: "Brandenburg an der Havel · Umzug erwartet",
+            pay: "Verhandelbar", exp: "Mind. 8 Jahre", lang: "Deutsch C2",
+            perks: "Firmenwagen (nach 2 Jahren), Kantine, Parkplatz", posted: "vor 8 Monaten" },
+      en: { role: "Head of Marketing & Communications (m/f/d)", place: "Brandenburg an der Havel · relocation expected",
+            pay: "Negotiable", exp: "Min. 8 years", lang: "German C2",
+            perks: "Company car (after 2 years), canteen, parking space", posted: "8 months ago" }
     },
     {
-      firm: "Studio Grünspan UG (haftungsbeschränkt)",
-      role: "Marketing Generalist:in (m/w/d)",
-      place: "Berlin-Kreuzberg · 4 Tage",
-      pay: "42.000 – 46.000 € p. a.",
-      lang: "Deutsch C2",
-      exp: "Sie machen alles. Wirklich alles.",
-      perks: "Feelgood-Manager, Tischtennis, Craft-Bier freitags",
-      posted: "vor 6 Monaten",
-      apps: 1633,
-      sig: "L. Marzahn"
+      firm: "Hanseatische Konsumgüter AG", apps: 728, sig: "F. Oldenburg", flagLang: true,
+      de: { role: "Head of Retail Excellence (m/w/d)", place: "Hamburg · Berlin möglich (ist es nicht)",
+            pay: "Wettbewerbsfähig", exp: "12 Jahre, Konzernerfahrung Pflicht", lang: "Deutsch verhandlungssicher",
+            perks: "Deutschlandticket, Gesundheitsbudget, Obstkorb", posted: "vor 3 Wochen" },
+      en: { role: "Head of Retail Excellence (m/f/d)", place: "Hamburg · Berlin possible (it is not)",
+            pay: "Competitive", exp: "12 years, corporate experience required", lang: "German, business fluent",
+            perks: "Transit pass, health budget, fruit basket", posted: "3 weeks ago" }
+    },
+    {
+      firm: "Studio Grünspan UG (haftungsbeschränkt)", apps: 1633, sig: "L. Marzahn", flagLang: true,
+      de: { role: "Marketing Generalist:in (m/w/d)", place: "Berlin-Kreuzberg · 4 Tage",
+            pay: "42.000 – 46.000 € p. a.", exp: "Sie machen alles. Wirklich alles.", lang: "Deutsch C2",
+            perks: "Feelgood-Manager, Tischtennis, Craft-Bier freitags", posted: "vor 6 Monaten" },
+      en: { role: "Marketing Generalist (m/f/d)", place: "Berlin-Kreuzberg · 4 days",
+            pay: "€42,000 – 46,000 p.a.", exp: "You do everything. Genuinely everything.", lang: "German C2",
+            perks: "Feelgood manager, table tennis, craft beer on Fridays", posted: "6 months ago" }
     }
   ];
 
+  /* Reasons: [German, English]. Whichever language is active leads; the
+     other follows underneath, because both versions sting differently. */
   var REASONS = [
     ["Die Stelle war intern bereits vergeben, bevor wir sie ausgeschrieben haben.",
      "The role was filled internally before we ever posted it."],
+    ["Die Ausschreibung war auf Englisch. Das Vorstellungsgespräch wird es nicht sein.",
+     "The job ad was in English. The interview will not be."],
+    ["Ihr Deutsch ist C1. Wir verlangen C2. Das Team spricht den ganzen Tag Englisch.",
+     "Your German is C1. We require C2. The team speaks English all day."],
+    ["Wir haben die Stelle auf Englisch ausgeschrieben, um internationale Talente anzusprechen. Dann haben wir eine Deutsche eingestellt.",
+     "We posted in English to attract international talent. Then we hired a German."],
+    ["Ihr Abschluss wurde im Ausland erworben. Wir wussten nicht, wie wir ihn bewerten sollen, also haben wir es gelassen.",
+     "Your degree was earned abroad. We didn't know how to evaluate it, so we didn't."],
+    ["Sie benötigen eine Visums-Unterstützung. Unser HR-System hat dafür kein Feld.",
+     "You would need visa sponsorship. Our HR system has no field for that."],
+    ["Ihr Deutsch ist ausgezeichnet. Aber nicht muttersprachlich.",
+     "Your German is excellent. But not native."],
     ["Sie sind überqualifiziert. Das macht uns nervös.",
      "You are overqualified. That makes us nervous."],
     ["Ihr Lebenslauf hat eine Lücke von vier Monaten im Jahr 2011. Wir sind darüber nicht hinweggekommen.",
      "Your CV has a four-month gap in 2011. We never got over it."],
     ["Unser Bewerbungsmanagementsystem hat Sie aussortiert. Wir wissen nicht, nach welchem Kriterium.",
      "Our applicant tracking system filtered you out. We don't know on what criterion."],
-    ["Ihr Deutsch ist ausgezeichnet. Aber nicht muttersprachlich.",
-     "Your German is excellent. But not native."],
     ["Wir haben Ihre Bewerbung nie geöffnet. Die Mail ging an ein Postfach, das seit 2023 niemand betreut.",
      "We never opened your application. It went to an inbox nobody has checked since 2023."],
     ["Der zuständige Hiring Manager ist seit sechs Wochen im Urlaub. Er kommt nicht zurück.",
@@ -891,49 +1017,62 @@
      "We stopped hiring in February. The posting exists for market research."],
     ["Ihr Anschreiben war zu gut. Wir haben vermutet, es sei nicht von Ihnen.",
      "Your cover letter was too good. We assumed you didn't write it."],
-    ["Ihr Foto war uns zu freundlich. Oder zu wenig. Wir konnten uns nicht einigen.",
-     "Your photo was too friendly. Or not enough. We couldn't agree."],
+    ["Ihr Name war für unser System schwer zu verarbeiten. Auch für uns.",
+     "Your name was hard for our system to process. And for us."],
     ["Sie haben nach dem Gehalt gefragt. In der ersten Mail.",
      "You asked about salary. In the first email."],
     ["Wir haben 2.300 Bewerbungen erhalten und nach dem Zufallsprinzip zwölf gelesen.",
      "We received 2,300 applications and read twelve of them at random."],
+    ["Sie haben kein deutsches Arbeitszeugnis. Wir lesen nichts anderes.",
+     "You have no German-style employer reference. We read nothing else."],
     ["Es gab keinen Grund. Manchmal gibt es einfach keinen Grund.",
      "There was no reason. Sometimes there simply isn't one."]
   ];
 
   var GHOST_BEATS = [
-    { day: "Tag 1",  text: "Eingangsbestätigung. Automatisch generiert. Keine Antwort auf diese Mail möglich." },
-    { day: "Tag 3",  text: "Status im Portal: „In Bearbeitung“." },
-    { day: "Tag 9",  text: "—", quiet: true },
-    { day: "Tag 16", text: "Sie sehen im Portal nach. Status: „In Bearbeitung“." },
-    { day: "Tag 24", text: "—", quiet: true },
-    { day: "Tag 31", text: "Sie schreiben eine höfliche Nachfrage zum Stand des Verfahrens." },
-    { day: "Tag 32", text: "—", quiet: true },
-    { day: "Tag 47", text: "Die Stelle wird erneut ausgeschrieben. Wortgleich." },
-    { day: "Tag 58", text: "Jemand aus dem Unternehmen sieht Ihr LinkedIn-Profil an. Dann nichts." },
-    { day: "Tag 73", text: "—", quiet: true },
-    { day: "Tag 90", text: "Keine Antwort. Status weiterhin: „In Bearbeitung“.", final: true }
+    { day: ["Tag 1", "Day 1"],   de: "Eingangsbestätigung. Automatisch generiert. Keine Antwort auf diese Mail möglich.",
+                                 en: "Receipt of application. Automatically generated. Do not reply to this email." },
+    { day: ["Tag 3", "Day 3"],   de: "Status im Portal: „In Bearbeitung“.",
+                                 en: "Portal status: “In progress”." },
+    { day: ["Tag 9", "Day 9"],   de: "—", en: "—", quiet: true },
+    { day: ["Tag 16", "Day 16"], de: "Sie sehen im Portal nach. Status: „In Bearbeitung“.",
+                                 en: "You check the portal. Status: “In progress”." },
+    { day: ["Tag 24", "Day 24"], de: "—", en: "—", quiet: true },
+    { day: ["Tag 31", "Day 31"], de: "Sie schreiben eine höfliche Nachfrage zum Stand des Verfahrens.",
+                                 en: "You send a polite follow-up asking about the status." },
+    { day: ["Tag 32", "Day 32"], de: "—", en: "—", quiet: true },
+    { day: ["Tag 47", "Day 47"], de: "Die Stelle wird erneut ausgeschrieben. Wortgleich.",
+                                 en: "The role is posted again. Word for word." },
+    { day: ["Tag 58", "Day 58"], de: "Jemand aus dem Unternehmen sieht Ihr LinkedIn-Profil an. Dann nichts.",
+                                 en: "Someone from the company views your LinkedIn profile. Then nothing." },
+    { day: ["Tag 73", "Day 73"], de: "—", en: "—", quiet: true },
+    { day: ["Tag 90", "Day 90"], de: "Keine Antwort. Status weiterhin: „In Bearbeitung“.",
+                                 en: "No reply. Status still: “In progress”.", final: true }
   ];
 
-  var STORE_KEY = "absage.ledger.v1";
+  var STORE_KEY = "absage.ledger.v2";
 
   var state = {
-    idx: 0,
-    sent: 0,
-    replies: 0,
-    ghosted: 0,
-    totalMs: 0,
-    truthShown: false,
-    order: []
+    lang: "de", idx: 0, sent: 0, replies: 0, ghosted: 0,
+    totalMs: 0, truthShown: false, order: []
   };
 
   var el = {};
   ["deck","btnSkip","btnApply","btnNext","btnGhostNext","btnRestart","realismMode",
    "statSent","statReplies","statGhosted","statTime","screenDeck","screenPending",
    "screenLetter","screenGhost","screenTruth","pendingRole","pendingFirm","clockVal",
-   "pendingBar","letterFrom","letterDate","letterSpeed","letterBetreff","reasonDe",
-   "reasonEn","sigName","sigFirm","stampDate","ghostRole","ghostFirm","timeline",
-   "caseNo","truthHead","truthBody"].forEach(function (id) { el[id] = document.getElementById(id); });
+   "clockUnit","pendingBar","letterFrom","letterDate","letterSpeed","letterBetreff",
+   "reasonMain","reasonGloss","sigName","sigFirm","sigDept","stampDate","stampWord",
+   "ghostRole","ghostFirm","timeline","caseNo","truthHead","truthBody","truthGloss",
+   "truthAgg","langDe","langEn","portalLabel","caseLabel","deckEyebrow","skipLabel",
+   "skipHint","applyLabel","applyHint","modeTitle","modeDesc","lblSent","lblReplies",
+   "lblGhosted","lblTime","pendingEyebrow","letterCity","letterSpeedLabel","letterP0",
+   "letterP1","letterP2","letterP3","letterDisclaimer","nextLabel","nextHint",
+   "ghostEyebrow","ghostNextLabel","ghostNextHint","truthEyebrow","restartLabel",
+   "restartHint","colophon"].forEach(function (id) { el[id] = document.getElementById(id); });
+
+  function t() { return UI[state.lang]; }
+  function jobText(job) { return job[state.lang]; }
 
   /* ---------- storage (best effort) ---------- */
   function load() {
@@ -946,43 +1085,100 @@
       state.ghosted = v.ghosted || 0;
       state.totalMs = v.totalMs || 0;
       state.truthShown = !!v.truthShown;
-    } catch (e) { /* private window, blocked storage — ledger just starts at zero */ }
+      if (v.lang === "en" || v.lang === "de") state.lang = v.lang;
+    } catch (e) { /* private window or blocked storage — start clean */ }
   }
   function save() {
     try {
       localStorage.setItem(STORE_KEY, JSON.stringify({
-        sent: state.sent, replies: state.replies, ghosted: state.ghosted,
-        totalMs: state.totalMs, truthShown: state.truthShown
+        lang: state.lang, sent: state.sent, replies: state.replies,
+        ghosted: state.ghosted, totalMs: state.totalMs, truthShown: state.truthShown
       }));
     } catch (e) { /* nothing to do */ }
   }
 
   /* ---------- helpers ---------- */
   function shuffled(n) {
-    var a = [], i, j, t;
+    var a = [], i, j, tmp;
     for (i = 0; i < n; i++) a.push(i);
     for (i = a.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));
-      t = a[i]; a[i] = a[j]; a[j] = t;
+      tmp = a[i]; a[i] = a[j]; a[j] = tmp;
     }
     return a;
   }
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-  function de(n, dec) {
-    return n.toFixed(dec === undefined ? 1 : dec).replace(".", ",");
+  function num(n, dec) {
+    var s = n.toFixed(dec === undefined ? 1 : dec);
+    return state.lang === "de" ? s.replace(".", ",") : s;
   }
-  var MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli",
-                "August","September","Oktober","November","Dezember"];
-  function longDate(d) { return d.getDate() + ". " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  var MONTHS = {
+    de: ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
+    en: ["January","February","March","April","May","June","July","August","September","October","November","December"]
+  };
+  function longDate(d) {
+    return state.lang === "de"
+      ? d.getDate() + ". " + MONTHS.de[d.getMonth()] + " " + d.getFullYear()
+      : MONTHS.en[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+  }
   function shortDate(d) {
     var p = function (x) { return (x < 10 ? "0" : "") + x; };
-    return p(d.getDate()) + "." + p(d.getMonth() + 1) + "." + d.getFullYear();
+    return state.lang === "de"
+      ? p(d.getDate()) + "." + p(d.getMonth() + 1) + "." + d.getFullYear()
+      : p(d.getMonth() + 1) + "/" + p(d.getDate()) + "/" + d.getFullYear();
   }
+  function groupNum(n) { return n.toLocaleString(state.lang === "de" ? "de-DE" : "en-GB"); }
   function show(name) {
     ["screenDeck","screenPending","screenLetter","screenGhost","screenTruth"]
       .forEach(function (k) { el[k].hidden = (k !== name); });
   }
   function currentJob() { return JOBS[state.order[state.idx % state.order.length]]; }
+
+  /* ---------- static copy ---------- */
+  function renderChrome() {
+    var c = t();
+    document.documentElement.lang = state.lang;
+    el.langDe.setAttribute("aria-pressed", state.lang === "de" ? "true" : "false");
+    el.langEn.setAttribute("aria-pressed", state.lang === "en" ? "true" : "false");
+
+    el.portalLabel.textContent = c.portal;
+    el.caseLabel.textContent = c.caseLabel;
+    el.deckEyebrow.textContent = c.deckEyebrow;
+    el.skipLabel.textContent = c.skip;
+    el.skipHint.textContent = c.skipHint;
+    el.applyLabel.textContent = c.apply;
+    el.applyHint.textContent = c.applyHint;
+    el.modeTitle.textContent = c.modeTitle;
+    el.modeDesc.textContent = c.modeDesc;
+    el.lblSent.textContent = c.lblSent;
+    el.lblReplies.textContent = c.lblReplies;
+    el.lblGhosted.textContent = c.lblGhosted;
+    el.lblTime.textContent = c.lblTime;
+    el.pendingEyebrow.textContent = c.pendingEyebrow;
+    el.clockUnit.textContent = c.clockUnit;
+    el.letterCity.textContent = c.letterCity;
+    el.letterSpeedLabel.textContent = c.speedLabel;
+    el.letterP0.textContent = c.p0;
+    el.letterP1.textContent = c.p1;
+    el.letterP2.textContent = c.p2;
+    el.letterP3.textContent = c.p3;
+    el.letterDisclaimer.innerHTML = c.disclaimer;
+    el.sigDept.textContent = c.dept;
+    el.stampWord.textContent = c.stampWord;
+    el.nextLabel.textContent = c.next;
+    el.nextHint.textContent = c.nextHint;
+    el.ghostEyebrow.textContent = c.ghostEyebrow;
+    el.ghostNextLabel.textContent = c.ghostNext;
+    el.ghostNextHint.textContent = el.btnGhostNext.disabled ? c.ghostWait : c.ghostDone;
+    el.truthEyebrow.textContent = c.truthEyebrow;
+    el.truthBody.textContent = c.truthBody;
+    el.truthGloss.textContent = c.truthGloss;
+    el.truthAgg.textContent = c.truthAgg;
+    el.truthHead.textContent = c.truthHead(state.replies + state.ghosted);
+    el.restartLabel.textContent = c.restart;
+    el.restartHint.textContent = c.restartHint;
+    el.colophon.innerHTML = c.colophon;
+  }
 
   /* ---------- ledger ---------- */
   function renderLedger() {
@@ -990,30 +1186,32 @@
     el.statReplies.textContent = state.replies;
     el.statGhosted.textContent = state.ghosted;
     el.statTime.textContent = state.replies
-      ? de(state.totalMs / state.replies / 1000) + " s"
+      ? num(state.totalMs / state.replies / 1000) + " s"
       : "—";
   }
 
   /* ---------- deck ---------- */
+  function spec(k, v, flag) {
+    return '<div class="spec' + (flag ? ' flag' : '') + '"><dt>' + k +
+           '</dt><span class="leader"></span><dd>' + v + '</dd></div>';
+  }
   function cardMarkup(job) {
-    return '<div class="verdict yes">Bewerben</div>' +
-           '<div class="verdict no">Weg damit</div>' +
+    var c = t(), j = jobText(job);
+    return '<div class="verdict yes">' + c.verdictYes + '</div>' +
+           '<div class="verdict no">' + c.verdictNo + '</div>' +
            '<div class="card-firm">' + job.firm + '</div>' +
-           '<h2 class="card-role">' + job.role + '</h2>' +
+           '<h2 class="card-role">' + j.role + '</h2>' +
            '<div class="card-rule"></div>' +
            '<dl class="specs">' +
-             spec("Ort", job.place) +
-             spec("Gehalt", job.pay) +
-             spec("Erfahrung", job.exp) +
-             spec("Sprache", job.lang) +
+             spec(c.specs.place, j.place) +
+             spec(c.specs.pay, j.pay) +
+             spec(c.specs.exp, j.exp) +
+             spec(c.specs.lang, j.lang, job.flagLang) +
            '</dl>' +
            '<div class="card-foot">' +
-             '<p class="perks">' + job.perks + '</p>' +
-             '<p class="queue"><b>' + job.apps.toLocaleString("de-DE") + '</b>Bewerbungen · ' + job.posted + '</p>' +
+             '<p class="perks">' + j.perks + '</p>' +
+             '<p class="queue"><b>' + groupNum(job.apps) + '</b>' + c.appsWord + ' · ' + j.posted + '</p>' +
            '</div>';
-  }
-  function spec(k, v) {
-    return '<div class="spec"><dt>' + k + '</dt><span class="leader"></span><dd>' + v + '</dd></div>';
   }
 
   function renderDeck() {
@@ -1031,9 +1229,10 @@
   }
 
   function attachDrag(card) {
-    var startX = 0, startY = 0, dx = 0, dy = 0, dragging = false, pid = null;
+    var startX = 0, dx = 0, dy = 0, dragging = false, pid = null;
     var yes = card.querySelector(".verdict.yes");
     var no = card.querySelector(".verdict.no");
+    var startY = 0;
 
     card.addEventListener("pointerdown", function (e) {
       if (e.button !== undefined && e.button !== 0) return;
@@ -1048,9 +1247,9 @@
       dx = e.clientX - startX;
       dy = e.clientY - startY;
       card.style.transform = "translate(" + dx + "px," + dy * 0.4 + "px) rotate(" + (dx * 0.05) + "deg)";
-      var t = Math.min(Math.abs(dx) / 90, 1);
-      yes.style.opacity = dx > 0 ? t : 0;
-      no.style.opacity = dx < 0 ? t : 0;
+      var p = Math.min(Math.abs(dx) / 90, 1);
+      yes.style.opacity = dx > 0 ? p : 0;
+      no.style.opacity = dx < 0 ? p : 0;
     });
 
     function release(e) {
@@ -1096,11 +1295,10 @@
   }
 
   /* ---------- pending ---------- */
-  var pendingTimer = null;
   function startPending(job) {
-    el.pendingRole.textContent = job.role;
+    el.pendingRole.textContent = jobText(job).role;
     el.pendingFirm.textContent = job.firm;
-    el.clockVal.textContent = "0,0";
+    el.clockVal.textContent = num(0);
     el.pendingBar.style.width = "0";
     show("screenPending");
 
@@ -1110,10 +1308,10 @@
     function tick(now) {
       var ms = now - t0;
       var p = Math.min(ms / target, 1);
-      el.clockVal.textContent = de(ms / 1000);
+      el.clockVal.textContent = num(ms / 1000);
       el.pendingBar.style.width = (p * 100) + "%";
       if (p < 1) {
-        pendingTimer = requestAnimationFrame(tick);
+        requestAnimationFrame(tick);
       } else {
         state.replies++;
         state.totalMs += ms;
@@ -1122,19 +1320,23 @@
         showLetter(job, ms);
       }
     }
-    pendingTimer = requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
   }
 
   /* ---------- letter ---------- */
   function showLetter(job, ms) {
     var now = new Date();
+    var c = t();
     var reason = pick(REASONS);
-    el.letterFrom.innerHTML = job.firm + "<br>Personalabteilung";
+    var primary = state.lang === "de" ? reason[0] : reason[1];
+    var gloss = state.lang === "de" ? reason[1] : reason[0];
+
+    el.letterFrom.innerHTML = job.firm + "<br>" + c.dept;
     el.letterDate.textContent = longDate(now);
-    el.letterSpeed.textContent = de(ms / 1000) + " Sek.";
-    el.letterBetreff.textContent = "Ihre Bewerbung als " + job.role;
-    el.reasonDe.textContent = reason[0];
-    el.reasonEn.textContent = reason[1];
+    el.letterSpeed.textContent = num(ms / 1000) + (state.lang === "de" ? " Sek." : " sec.");
+    el.letterBetreff.textContent = c.betreff(jobText(job).role);
+    el.reasonMain.textContent = primary;
+    el.reasonGloss.textContent = gloss;
     el.sigName.textContent = job.sig;
     el.sigFirm.textContent = job.firm;
     el.stampDate.textContent = shortDate(now);
@@ -1144,17 +1346,15 @@
 
   /* ---------- ghost ---------- */
   var ghostTimers = [];
-  function clearGhostTimers() {
+  function startGhost(job) {
     ghostTimers.forEach(clearTimeout);
     ghostTimers = [];
-  }
-  function startGhost(job) {
-    clearGhostTimers();
-    el.ghostRole.textContent = job.role;
-    el.ghostFirm.textContent = job.firm + " · beworben am " + longDate(new Date());
+    var c = t();
+    el.ghostRole.textContent = jobText(job).role;
+    el.ghostFirm.textContent = job.firm + c.appliedOn(longDate(new Date()));
     el.timeline.textContent = "";
     el.btnGhostNext.disabled = true;
-    el.btnGhostNext.querySelector("small").textContent = "Bitte warten Sie";
+    el.ghostNextHint.textContent = c.ghostWait;
     show("screenGhost");
     window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -1163,14 +1363,15 @@
         var li = document.createElement("li");
         if (beat.quiet) li.className = "void";
         if (beat.final) li.className = "final";
-        li.innerHTML = '<span class="tl-day">' + beat.day + '</span>' + beat.text;
+        li.innerHTML = '<span class="tl-day">' +
+          beat.day[state.lang === "de" ? 0 : 1] + '</span>' + beat[state.lang];
         el.timeline.appendChild(li);
         if (beat.final) {
           state.ghosted++;
           save();
           renderLedger();
           el.btnGhostNext.disabled = false;
-          el.btnGhostNext.querySelector("small").textContent = "Sie haben 90 Tage verloren";
+          el.ghostNextHint.textContent = t().ghostDone;
         }
       }, i * 780));
     });
@@ -1181,9 +1382,7 @@
     if (state.truthShown || state.sent < 7) return false;
     state.truthShown = true;
     save();
-    var handled = state.replies + state.ghosted;
-    el.truthHead.textContent = "Sie haben hier " + handled +
-      " Antworten bekommen. Draußen waren es in diesem Jahr vermutlich weniger.";
+    el.truthHead.textContent = t().truthHead(state.replies + state.ghosted);
     show("screenTruth");
     window.scrollTo({ top: 0, behavior: "smooth" });
     return true;
@@ -1195,11 +1394,23 @@
     show("screenDeck");
   }
 
+  /* ---------- language ---------- */
+  function setLang(lang) {
+    if (state.lang === lang) return;
+    state.lang = lang;
+    save();
+    renderChrome();
+    renderLedger();
+    renderDeck();
+  }
+
   /* ---------- wiring ---------- */
   el.btnApply.addEventListener("click", function () { commit(true); });
   el.btnSkip.addEventListener("click", function () { commit(false); });
   el.btnNext.addEventListener("click", backToDeck);
   el.btnGhostNext.addEventListener("click", backToDeck);
+  el.langDe.addEventListener("click", function () { setLang("de"); });
+  el.langEn.addEventListener("click", function () { setLang("en"); });
   el.btnRestart.addEventListener("click", function () {
     state.order = shuffled(JOBS.length);
     state.idx = 0;
@@ -1216,11 +1427,24 @@
 
   /* ---------- boot ---------- */
   load();
+  if (!localStorageHasLang() && navigatorPrefersEnglish()) state.lang = "en";
   state.order = shuffled(JOBS.length);
   el.caseNo.textContent = "2026-BE-" +
     String(4000 + Math.floor(Math.random() * 5999)).padStart(5, "0");
+  renderChrome();
   renderLedger();
   renderDeck();
+
+  function localStorageHasLang() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      return !!(raw && JSON.parse(raw).lang);
+    } catch (e) { return false; }
+  }
+  function navigatorPrefersEnglish() {
+    var l = (navigator.language || "").toLowerCase();
+    return l.indexOf("de") !== 0;
+  }
 })();
 </script>
 </body>
