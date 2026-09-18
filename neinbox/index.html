@@ -868,6 +868,146 @@
     width: 100%;
   }
 
+
+  /* ---------- questionnaire ---------- */
+  .formno {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .fields { display: flex; flex-direction: column; gap: 15px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field > label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+  .field .opt { color: var(--ink-3); text-transform: none; letter-spacing: 0; font-style: italic; }
+  .field .req { color: var(--stamp); }
+
+  .field input[type="text"],
+  .field input[type="number"],
+  .field input[type="email"],
+  .field select,
+  .field textarea {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-radius: 0;
+    padding: 10px 11px;
+    line-height: 1.4;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .field select {
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%),
+                      linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+    background-position: calc(100% - 17px) calc(50% + 1px), calc(100% - 12px) calc(50% + 1px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 32px;
+  }
+  .field textarea { min-height: 120px; resize: vertical; font-size: 14px; line-height: 1.55; }
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible { outline: 2px solid var(--seal); outline-offset: -1px; }
+  .field.bad input, .field.bad textarea, .field.bad select { border-color: var(--stamp); }
+  .field .err {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--stamp);
+    letter-spacing: .04em;
+  }
+  .counter {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .consents {
+    margin-top: 20px;
+    border-top: 1px solid var(--rule);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+  .consent { display: flex; align-items: flex-start; gap: 10px; }
+  .consent input {
+    margin: 2px 0 0;
+    width: 16px;
+    height: 16px;
+    flex: none;
+    accent-color: var(--seal);
+  }
+  .consent label { font-size: 13px; line-height: 1.5; cursor: pointer; }
+  .consent label b { font-weight: 600; display: block; }
+  .consent label span { color: var(--ink-2); font-size: 12px; }
+
+  /* ---------- thanks ---------- */
+  .thanks { text-align: center; padding: 34px 24px 30px; }
+  .thanks .mark {
+    display: inline-block;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--seal);
+    border: 2.5px solid var(--seal);
+    padding: 7px 14px;
+    transform: rotate(-3deg);
+  }
+  .thanks h2 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 21px;
+    letter-spacing: -.015em;
+    margin: 20px 0 10px;
+    text-wrap: balance;
+  }
+  .thanks p {
+    font-family: var(--serif);
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin: 0 auto 12px;
+    max-width: 40ch;
+  }
+  .thanks .demo {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--stamp);
+    text-transform: uppercase;
+    margin-top: 16px;
+  }
+
+  .entry-row {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 380px) { .entry-row { grid-template-columns: 1fr; } }
+
   .colophon {
     margin-top: 26px;
     padding-top: 14px;
@@ -917,10 +1057,16 @@
         </button>
       </div>
 
-      <button class="btn ghostly cv-entry" id="btnCv" type="button">
-        <span id="cvEntryLabel">Lebenslauf hochladen</span>
-        <small id="cvEntryHint">Für maßgeschneiderte Stellenvorschläge</small>
-      </button>
+      <div class="entry-row">
+        <button class="btn ghostly" id="btnCv" type="button">
+          <span id="cvEntryLabel">Lebenslauf hochladen</span>
+          <small id="cvEntryHint">Für maßgeschneiderte Stellenvorschläge</small>
+        </button>
+        <button class="btn ghostly" id="btnStory" type="button">
+          <span id="storyEntryLabel">Ihre Geschichte</span>
+          <small id="storyEntryHint">Was ist Ihnen passiert?</small>
+        </button>
+      </div>
 
       <div class="mode">
         <input type="checkbox" id="realismMode">
@@ -1035,6 +1181,111 @@
       </div>
     </section>
 
+
+    <!-- ============ STORY ============ -->
+    <section id="screenStory" class="panel" hidden>
+      <div class="formno">
+        <span id="formNo">Formular NB-01</span>
+        <span id="formSub">Erfahrungsbericht · freiwillig</span>
+      </div>
+
+      <h2 id="stHead">Was ist Ihnen tatsächlich passiert?</h2>
+      <p class="lede" id="stLede">Wir sammeln, was im deutschen Bewerbungsmarkt wirklich geschieht. Je mehr Berichte, desto schwerer zu ignorieren.</p>
+
+      <p class="privacy" id="stPrivacy"></p>
+
+      <form id="storyForm" novalidate>
+        <div class="fields" style="margin-top:18px">
+          <div class="field" id="fWhere">
+            <label for="inWhere"><span id="lbWhere">Stadt</span> <span class="opt" id="optWhere">(optional)</span></label>
+            <input type="text" id="inWhere" name="city" autocomplete="off" maxlength="60">
+          </div>
+
+          <div class="field" id="fIndustry">
+            <label for="inIndustry"><span id="lbIndustry">Branche</span></label>
+            <select id="inIndustry" name="industry"></select>
+          </div>
+
+          <div class="field" id="fWaited">
+            <label for="inWaited"><span id="lbWaited">Wie lange haben Sie gewartet?</span></label>
+            <select id="inWaited" name="waited"></select>
+          </div>
+
+          <div class="field" id="fHeard">
+            <label for="inHeard"><span id="lbHeard">Haben Sie je eine Antwort bekommen?</span></label>
+            <select id="inHeard" name="heard"></select>
+          </div>
+
+          <div class="field" id="fAdLang">
+            <label for="inAdLang"><span id="lbAdLang">War die Stellenanzeige auf Englisch?</span> <span class="req">*</span></label>
+            <select id="inAdLang" name="adLanguage"></select>
+          </div>
+
+          <div class="field" id="fCount">
+            <label for="inCount"><span id="lbCount">Bewerbungen in den letzten 12 Monaten</span> <span class="opt" id="optCount">(optional)</span></label>
+            <input type="number" id="inCount" name="applications" min="0" max="9999" inputmode="numeric">
+          </div>
+
+          <div class="field" id="fStory">
+            <label for="inStory"><span id="lbStory">Ihre Geschichte</span> <span class="req">*</span></label>
+            <textarea id="inStory" name="story" maxlength="4000"></textarea>
+            <span class="counter" id="storyCount">0 / 4000</span>
+            <span class="err" id="storyErr" hidden></span>
+          </div>
+        </div>
+
+        <div class="consents">
+          <div class="consent">
+            <input type="checkbox" id="cPublish" name="consentPublish">
+            <label for="cPublish"><b id="lbPublish">Meine Geschichte darf anonym veröffentlicht werden.</b><span id="dsPublish">In Berichten, Presse oder einem Buch. Ohne Ihren Namen.</span></label>
+          </div>
+          <div class="consent">
+            <input type="checkbox" id="cContact" name="consentContact">
+            <label for="cContact"><b id="lbContact">Ihr dürft mich dazu kontaktieren.</b><span id="dsContact">Nur zu dieser Geschichte, für Rückfragen.</span></label>
+          </div>
+          <div class="consent">
+            <input type="checkbox" id="cUpdates" name="consentUpdates">
+            <label for="cUpdates"><b id="lbUpdates">Haltet mich auf dem Laufenden.</b><span id="dsUpdates">Gelegentlich, wenn daraus etwas wird. Jederzeit abbestellbar.</span></label>
+          </div>
+
+          <div class="field" id="fEmail" hidden>
+            <label for="inEmail"><span id="lbEmail">E-Mail</span> <span class="req">*</span></label>
+            <input type="email" id="inEmail" name="email" autocomplete="email" maxlength="120">
+            <span class="err" id="emailErr" hidden></span>
+          </div>
+        </div>
+
+        <p class="privacy" id="stLegal" style="margin-top:18px"></p>
+
+        <div class="controls">
+          <button class="btn" id="btnStoryBack" type="button">
+            <span id="stBackLabel">Zurück</span>
+            <small id="stBackHint">Nicht senden</small>
+          </button>
+          <button class="btn apply" id="btnStorySend" type="submit">
+            <span id="stSendLabel">Bericht senden</span>
+            <small id="stSendHint">Freiwillig und anonym</small>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ THANKS ============ -->
+    <section id="screenThanks" hidden>
+      <div class="panel thanks">
+        <span class="mark" id="thMark">Eingegangen</span>
+        <h2 id="thHead">Danke. Das war mehr, als die meisten für Sie getan haben.</h2>
+        <p id="thBody">Ihr Bericht zählt jetzt mit. Wenn genug davon zusammenkommen, wird daraus etwas, das man schwer wegdiskutieren kann.</p>
+        <p class="demo" id="thDemo" hidden></p>
+      </div>
+      <div class="controls">
+        <button class="btn apply wide" id="btnThanksBack" type="button">
+          <span id="thBackLabel">Zurück zu den Stellen</span>
+          <small id="thBackHint">Es hört ja nicht auf</small>
+        </button>
+      </div>
+    </section>
+
     <!-- ============ PENDING ============ -->
     <section id="screenPending" class="pending" hidden>
       <p class="eyebrow" id="pendingEyebrow">Eingangsbestätigung · automatisch generiert</p>
@@ -1112,9 +1363,13 @@
         <p class="gloss" id="truthGloss">—</p>
         <p id="truthAgg">—</p>
         <div class="controls">
-          <button class="btn wide" id="btnRestart" type="button">
+          <button class="btn" id="btnRestart" type="button">
             <span id="restartLabel">Von vorn anfangen</span>
             <small id="restartHint">Wie im echten Leben</small>
+          </button>
+          <button class="btn apply" id="btnTruthStory" type="button">
+            <span id="truthStoryLabel">Ihre Geschichte erzählen</span>
+            <small id="truthStoryHint">Echte Erfahrungen, echte Daten</small>
           </button>
         </div>
       </div>
@@ -1254,7 +1509,47 @@
       inviteP2: "Wir laden Sie zu einem ersten Gespräch ein. Die Rahmenbedingungen entnehmen Sie bitte dem Folgenden:",
       inviteP3: "Bitte bestätigen Sie den Termin innerhalb von 24 Stunden. Wir freuen uns auf das Gespräch und melden uns im Anschluss zeitnah bei Ihnen.",
       inviteNext: "Weiter bewerben",
-      inviteNextHint: "Verlassen Sie sich nicht darauf"
+      inviteNextHint: "Verlassen Sie sich nicht darauf",
+      storyEntry: "Ihre Geschichte",
+      storyEntryHint: "Was ist Ihnen passiert?",
+      truthStory: "Ihre Geschichte erzählen",
+      truthStoryHint: "Echte Erfahrungen, echte Daten",
+      formNo: "Formular NB-01",
+      formSub: "Erfahrungsbericht · freiwillig",
+      stHead: "Was ist Ihnen tatsächlich passiert?",
+      stLede: "Wir sammeln, was im deutschen Bewerbungsmarkt wirklich geschieht. Je mehr Berichte, desto schwerer zu ignorieren.",
+      stPrivacy: "<b>Ihr Lebenslauf bleibt unangetastet.</b> Der wird weiterhin nicht hochgeladen und verlässt diesen Tab nicht. Dieses Formular ist etwas anderes: Sie senden es bewusst ab, und es wird gespeichert. Nur das, was hier steht.",
+      stLegal: "Pflichtfelder sind mit * markiert. Ohne Häkchen passiert nichts — keine Veröffentlichung, keine Mails. Sie können jederzeit die Löschung Ihres Berichts verlangen.",
+      optional: "(optional)",
+      lbWhere: "Stadt",
+      lbIndustry: "Branche",
+      lbWaited: "Wie lange haben Sie gewartet?",
+      lbHeard: "Haben Sie je eine Antwort bekommen?",
+      lbAdLang: "War die Stellenanzeige auf Englisch?",
+      lbCount: "Bewerbungen in den letzten 12 Monaten",
+      lbStory: "Ihre Geschichte",
+      storyPlaceholder: "Was ist passiert? Wie lange haben Sie gewartet? Was hätten Sie sich gewünscht?",
+      lbPublish: "Meine Geschichte darf anonym veröffentlicht werden.",
+      dsPublish: "In Berichten, Presse oder einem Buch. Ohne Ihren Namen.",
+      lbContact: "Ihr dürft mich dazu kontaktieren.",
+      dsContact: "Nur zu dieser Geschichte, für Rückfragen.",
+      lbUpdates: "Haltet mich auf dem Laufenden.",
+      dsUpdates: "Gelegentlich, wenn daraus etwas wird. Jederzeit abbestellbar.",
+      lbEmail: "E-Mail",
+      errStory: "Bitte schreiben Sie ein paar Sätze mehr.",
+      errEmail: "Diese E-Mail-Adresse sieht nicht richtig aus.",
+      stBack: "Zurück",
+      stBackHint: "Nicht senden",
+      stSend: "Bericht senden",
+      stSendHint: "Dauert eine Minute",
+      stSending: "wird gesendet …",
+      stSendFailed: "Senden fehlgeschlagen. Bitte erneut versuchen.",
+      thMark: "Eingegangen",
+      thHead: "Danke. Das war mehr, als die meisten für Sie getan haben.",
+      thBody: "Ihr Bericht zählt jetzt mit. Wenn genug davon zusammenkommen, wird daraus etwas, das man schwer wegdiskutieren kann.",
+      thDemo: "Demo-Modus: es wurde nichts gesendet.",
+      thBack: "Zurück zu den Stellen",
+      thBackHint: "Es hört ja nicht auf"
     },
     en: {
       portal: "Application portal · simulation",
@@ -1376,7 +1671,47 @@
       inviteP2: "We would like to invite you to a first conversation. The terms are as follows:",
       inviteP3: "Please confirm within 24 hours. We look forward to speaking with you and will be back in touch promptly afterwards.",
       inviteNext: "Keep applying",
-      inviteNextHint: "Do not rely on this one"
+      inviteNextHint: "Do not rely on this one",
+      storyEntry: "Your story",
+      storyEntryHint: "What happened to you?",
+      truthStory: "Tell us your story",
+      truthStoryHint: "Real experiences, real data",
+      formNo: "Form NB-01",
+      formSub: "Experience report · voluntary",
+      stHead: "What actually happened to you?",
+      stLede: "We are collecting what really goes on in the German job market. The more reports, the harder it is to wave away.",
+      stPrivacy: "<b>Your CV is untouched.</b> It is still not uploaded and still never leaves this tab. This form is a different thing: you are choosing to send it, and it will be stored. Only what is written here.",
+      stLegal: "Required fields are marked *. Nothing happens without a tick — no publication, no emails. You can ask for your report to be deleted at any time.",
+      optional: "(optional)",
+      lbWhere: "City",
+      lbIndustry: "Industry",
+      lbWaited: "How long did you wait?",
+      lbHeard: "Did you ever hear back?",
+      lbAdLang: "Was the job ad in English?",
+      lbCount: "Applications in the last 12 months",
+      lbStory: "Your story",
+      storyPlaceholder: "What happened? How long did you wait? What would you have wanted instead?",
+      lbPublish: "My story may be published anonymously.",
+      dsPublish: "In reports, press or a book. Without your name.",
+      lbContact: "You may contact me about it.",
+      dsContact: "Only about this story, to follow up.",
+      lbUpdates: "Keep me posted.",
+      dsUpdates: "Occasionally, if this becomes something. Unsubscribe any time.",
+      lbEmail: "Email",
+      errStory: "Please write a few more sentences.",
+      errEmail: "That email address does not look right.",
+      stBack: "Back",
+      stBackHint: "Do not send",
+      stSend: "Send report",
+      stSendHint: "Takes about a minute",
+      stSending: "sending ...",
+      stSendFailed: "Could not send. Please try again.",
+      thMark: "Received",
+      thHead: "Thank you. That is more than most of them did for you.",
+      thBody: "Your report counts now. Once enough of them come in, this becomes something that is hard to argue away.",
+      thDemo: "Demo mode: nothing was sent.",
+      thBack: "Back to the positions",
+      thBackHint: "It does not stop, after all"
     }
   };
 
@@ -1633,7 +1968,7 @@
    "lblGhosted","lblInvites","statInvites","lblTime","modeOdds","letterCard","pendingEyebrow","letterCity","letterSpeedLabel","letterP0",
    "letterP1","letterP2","letterP3","letterDisclaimer","nextLabel","nextHint",
    "ghostEyebrow","ghostNextLabel","ghostNextHint","truthEyebrow","restartLabel",
-   "restartHint","colophon","btnCv","cvEntryLabel","cvEntryHint","screenCv","screenAnalysis","screenReport","screenShred","cvEyebrow","cvHead","cvLede","dropzone","dropBig","dropSmall","fileInput","pasteToggle","pasteArea","privacyNote","btnCvBack","cvBackLabel","cvBackHint","btnCvGo","cvGoLabel","cvGoHint","anEyebrow","anHead","anLede","steps","rpEyebrow","rpHead","rpScoreLabel","rpScore","rpReadout","rpRecLabel","rpRecs","rpNote","btnShred","shredLabel","shredHint","btnRecDeck","recDeckLabel","recDeckHint","shEyebrow","shHead","shLede","shredStage","shredDoc","shredDocTitle","shredDocBody","blades","shredDone","shredMark","shredMarkSub","shredTruth","btnShredDone","shredDoneLabel","shredDoneHint"].forEach(function (id) { el[id] = document.getElementById(id); });
+   "restartHint","colophon","btnCv","cvEntryLabel","cvEntryHint","screenCv","screenAnalysis","screenReport","screenShred","cvEyebrow","cvHead","cvLede","dropzone","dropBig","dropSmall","fileInput","pasteToggle","pasteArea","privacyNote","btnCvBack","cvBackLabel","cvBackHint","btnCvGo","cvGoLabel","cvGoHint","anEyebrow","anHead","anLede","steps","rpEyebrow","rpHead","rpScoreLabel","rpScore","rpReadout","rpRecLabel","rpRecs","rpNote","btnShred","shredLabel","shredHint","btnRecDeck","recDeckLabel","recDeckHint","shEyebrow","shHead","shLede","shredStage","shredDoc","shredDocTitle","shredDocBody","blades","shredDone","shredMark","shredMarkSub","shredTruth","btnShredDone","shredDoneLabel","shredDoneHint","btnStory","storyEntryLabel","storyEntryHint","btnTruthStory","truthStoryLabel","truthStoryHint","screenStory","screenThanks","formNo","formSub","stHead","stLede","stPrivacy","stLegal","storyForm","fWhere","inWhere","lbWhere","optWhere","fIndustry","inIndustry","lbIndustry","fWaited","inWaited","lbWaited","fHeard","inHeard","lbHeard","fAdLang","inAdLang","lbAdLang","fCount","inCount","lbCount","optCount","fStory","inStory","lbStory","storyCount","storyErr","cPublish","lbPublish","dsPublish","cContact","lbContact","dsContact","cUpdates","lbUpdates","dsUpdates","fEmail","inEmail","lbEmail","emailErr","btnStoryBack","stBackLabel","stBackHint","btnStorySend","stSendLabel","stSendHint","thMark","thHead","thBody","thDemo","btnThanksBack","thBackLabel","thBackHint"].forEach(function (id) { el[id] = document.getElementById(id); });
 
   function t() { return UI[state.lang]; }
   function jobText(job) { return job[state.lang]; }
@@ -1696,7 +2031,8 @@
   function groupNum(n) { return n.toLocaleString(state.lang === "de" ? "de-DE" : "en-GB"); }
   function show(name) {
     ["screenDeck","screenPending","screenLetter","screenGhost","screenTruth",
-     "screenCv","screenAnalysis","screenReport","screenShred"]
+     "screenCv","screenAnalysis","screenReport","screenShred",
+     "screenStory","screenThanks"]
       .forEach(function (k) { el[k].hidden = (k !== name); });
   }
   function currentJob() { return JOBS[state.order[state.idx % state.order.length]]; }
@@ -2024,6 +2360,7 @@
     save();
     renderChrome();
     renderCvChrome();
+    renderStoryChrome();
     renderLedger();
     renderDeck();
   }
@@ -2351,6 +2688,250 @@
     if (cvProfile) renderReport();
   }
 
+
+  /* =======================================================================
+     Story collection.
+
+     This is the ONE place in Neinbox that sends anything anywhere, and it
+     only sends what the visitor typed into this form, after they pressed
+     the button. It never touches the CV: `cvText` is not read here and
+     must not be. That separation is the whole promise of the shredder, so
+     keep it literal.
+
+     To connect a destination, fill in COLLECT below. Until then the form
+     runs end to end in demo mode and posts nothing.
+     ======================================================================= */
+  var COLLECT = {
+    // "none" = demo, nothing is sent | "supabase" | "post" = plain JSON POST
+    mode: "none",
+    // Supabase: "https://<project>.supabase.co"   |   post: your full URL
+    url: "",
+    // Supabase anon key only. It is public by design — the table MUST be
+    // insert-only via Row Level Security, or anyone can read every story.
+    apiKey: "",
+    table: "stories"
+  };
+
+  var SELECTS = {
+    industry: [
+      ["", "— bitte wählen —", "— please choose —"],
+      ["retail", "Einzelhandel / Konsumgüter", "Retail / consumer goods"],
+      ["tech", "Tech / Software", "Tech / software"],
+      ["agency", "Agentur / Marketing", "Agency / marketing"],
+      ["finance", "Finanzen / Versicherung", "Finance / insurance"],
+      ["industry", "Industrie / Fertigung", "Industry / manufacturing"],
+      ["health", "Gesundheit / Pflege", "Health / care"],
+      ["public", "Öffentlicher Dienst", "Public sector"],
+      ["hospitality", "Gastronomie / Hotellerie", "Hospitality"],
+      ["logistics", "Logistik / Transport", "Logistics / transport"],
+      ["education", "Bildung / Wissenschaft", "Education / research"],
+      ["other", "Andere", "Other"]
+    ],
+    waited: [
+      ["", "— bitte wählen —", "— please choose —"],
+      ["waiting", "Ich warte immer noch", "I am still waiting"],
+      ["lt2w", "Weniger als 2 Wochen", "Less than 2 weeks"],
+      ["2to4w", "2 bis 4 Wochen", "2 to 4 weeks"],
+      ["1to3m", "1 bis 3 Monate", "1 to 3 months"],
+      ["gt3m", "Länger als 3 Monate", "More than 3 months"]
+    ],
+    heard: [
+      ["", "— bitte wählen —", "— please choose —"],
+      ["never", "Nie etwas gehört", "Never heard anything"],
+      ["auto", "Nur die automatische Eingangsbestätigung", "Only the automated receipt"],
+      ["rejection_bare", "Absage ohne Begründung", "Rejection with no reason given"],
+      ["rejection_reason", "Absage mit Begründung", "Rejection with a reason"],
+      ["interview", "Einladung zum Gespräch", "Invitation to interview"],
+      ["offer", "Ein Angebot", "An offer"]
+    ],
+    adLanguage: [
+      ["", "— bitte wählen —", "— please choose —"],
+      ["en_c1c2", "Auf Englisch — aber Deutsch C1/C2 verlangt", "In English — but German C1/C2 required"],
+      ["en_some_german", "Auf Englisch — Deutsch erwünscht, nicht Pflicht", "In English — German preferred, not required"],
+      ["en_no_german", "Auf Englisch — kein Deutsch verlangt", "In English — no German required"],
+      ["de", "Auf Deutsch", "In German"],
+      ["unsure", "Weiß ich nicht mehr", "I do not remember"]
+    ]
+  };
+
+  function fillSelect(node, key) {
+    var i = state.lang === "de" ? 1 : 2;
+    node.textContent = "";
+    SELECTS[key].forEach(function (row) {
+      var o = document.createElement("option");
+      o.value = row[0];
+      o.textContent = row[i];
+      node.appendChild(o);
+    });
+  }
+
+  function renderStoryChrome() {
+    var c = t();
+    el.storyEntryLabel.textContent = c.storyEntry;
+    el.storyEntryHint.textContent = c.storyEntryHint;
+    el.truthStoryLabel.textContent = c.truthStory;
+    el.truthStoryHint.textContent = c.truthStoryHint;
+    el.formNo.textContent = c.formNo;
+    el.formSub.textContent = c.formSub;
+    el.stHead.textContent = c.stHead;
+    el.stLede.textContent = c.stLede;
+    el.stPrivacy.innerHTML = c.stPrivacy;
+    el.stLegal.innerHTML = c.stLegal;
+    el.lbWhere.textContent = c.lbWhere;
+    el.optWhere.textContent = c.optional;
+    el.lbIndustry.textContent = c.lbIndustry;
+    el.lbWaited.textContent = c.lbWaited;
+    el.lbHeard.textContent = c.lbHeard;
+    el.lbAdLang.textContent = c.lbAdLang;
+    el.lbCount.textContent = c.lbCount;
+    el.optCount.textContent = c.optional;
+    el.lbStory.textContent = c.lbStory;
+    el.inStory.placeholder = c.storyPlaceholder;
+    el.lbPublish.textContent = c.lbPublish;
+    el.dsPublish.textContent = c.dsPublish;
+    el.lbContact.textContent = c.lbContact;
+    el.dsContact.textContent = c.dsContact;
+    el.lbUpdates.textContent = c.lbUpdates;
+    el.dsUpdates.textContent = c.dsUpdates;
+    el.lbEmail.textContent = c.lbEmail;
+    el.stBackLabel.textContent = c.stBack;
+    el.stBackHint.textContent = c.stBackHint;
+    el.stSendLabel.textContent = c.stSend;
+    el.stSendHint.textContent = c.stSendHint;
+    el.thMark.textContent = c.thMark;
+    el.thHead.textContent = c.thHead;
+    el.thBody.textContent = c.thBody;
+    el.thBackLabel.textContent = c.thBack;
+    el.thBackHint.textContent = c.thBackHint;
+    el.thDemo.textContent = c.thDemo;
+    ["industry", "waited", "heard", "adLanguage"].forEach(function (k) {
+      var node = { industry: el.inIndustry, waited: el.inWaited,
+                   heard: el.inHeard, adLanguage: el.inAdLang }[k];
+      var keep = node.value;
+      fillSelect(node, k);
+      node.value = keep;
+    });
+    updateCounter();
+  }
+
+  function updateCounter() {
+    el.storyCount.textContent = el.inStory.value.length + " / 4000";
+  }
+
+  function emailNeeded() {
+    return el.cContact.checked || el.cUpdates.checked;
+  }
+  function syncEmailField() {
+    el.fEmail.hidden = !emailNeeded();
+    if (el.fEmail.hidden) {
+      el.inEmail.value = "";
+      el.fEmail.classList.remove("bad");
+      el.emailErr.hidden = true;
+    }
+  }
+
+  function markBad(field, errNode, msg) {
+    field.classList.add("bad");
+    if (errNode) { errNode.textContent = msg; errNode.hidden = false; }
+  }
+  function clearBad(field, errNode) {
+    field.classList.remove("bad");
+    if (errNode) errNode.hidden = true;
+  }
+
+  function validateStory() {
+    var c = t();
+    var ok = true;
+    clearBad(el.fStory, el.storyErr);
+    clearBad(el.fAdLang, null);
+    clearBad(el.fEmail, el.emailErr);
+
+    if (el.inStory.value.trim().length < 30) {
+      markBad(el.fStory, el.storyErr, c.errStory);
+      ok = false;
+    }
+    if (!el.inAdLang.value) {
+      markBad(el.fAdLang, null, "");
+      ok = false;
+    }
+    if (emailNeeded()) {
+      var v = el.inEmail.value.trim();
+      // Deliberately loose: the point is to catch typos, not to police addresses.
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+        markBad(el.fEmail, el.emailErr, c.errEmail);
+        ok = false;
+      }
+    }
+    return ok;
+  }
+
+  function buildPayload() {
+    return {
+      city: el.inWhere.value.trim() || null,
+      industry: el.inIndustry.value || null,
+      waited: el.inWaited.value || null,
+      heard_back: el.inHeard.value || null,
+      ad_language: el.inAdLang.value,
+      applications_12m: el.inCount.value ? Number(el.inCount.value) : null,
+      story: el.inStory.value.trim(),
+      consent_publish: el.cPublish.checked,
+      consent_contact: el.cContact.checked,
+      consent_updates: el.cUpdates.checked,
+      email: emailNeeded() ? el.inEmail.value.trim() : null,
+      form_language: state.lang,
+      submitted_at: new Date().toISOString()
+    };
+  }
+
+  function sendStory(payload) {
+    if (COLLECT.mode === "none" || !COLLECT.url) {
+      return Promise.resolve({ demo: true });
+    }
+    var url, headers = { "Content-Type": "application/json" };
+    if (COLLECT.mode === "supabase") {
+      url = COLLECT.url.replace(/\/+$/, "") + "/rest/v1/" + COLLECT.table;
+      headers.apikey = COLLECT.apiKey;
+      headers.Authorization = "Bearer " + COLLECT.apiKey;
+      headers.Prefer = "return=minimal";
+    } else {
+      url = COLLECT.url;
+    }
+    return fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return { demo: false };
+    });
+  }
+
+  function submitStory(e) {
+    if (e) e.preventDefault();
+    if (!validateStory()) {
+      var bad = document.querySelector("#screenStory .field.bad");
+      if (bad) bad.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    var c = t();
+    el.btnStorySend.disabled = true;
+    el.stSendHint.textContent = c.stSending;
+
+    sendStory(buildPayload()).then(function (r) {
+      el.thDemo.hidden = !r.demo;
+      show("screenThanks");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      el.storyForm.reset();
+      syncEmailField();
+      updateCounter();
+    }).catch(function () {
+      el.stSendHint.textContent = c.stSendFailed;
+    }).then(function () {
+      el.btnStorySend.disabled = false;
+      if (el.stSendHint.textContent === c.stSending) el.stSendHint.textContent = c.stSendHint;
+    });
+  }
+
   /* ---------- wiring ---------- */
   el.btnApply.addEventListener("click", function () { commit(true); });
   el.btnSkip.addEventListener("click", function () { commit(false); });
@@ -2422,6 +3003,20 @@
     }
   });
 
+  function openStory() {
+    renderStoryChrome();
+    show("screenStory");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  el.btnStory.addEventListener("click", openStory);
+  el.btnTruthStory.addEventListener("click", openStory);
+  el.btnStoryBack.addEventListener("click", function () { show("screenDeck"); });
+  el.btnThanksBack.addEventListener("click", function () { show("screenDeck"); });
+  el.storyForm.addEventListener("submit", submitStory);
+  el.inStory.addEventListener("input", updateCounter);
+  el.cContact.addEventListener("change", syncEmailField);
+  el.cUpdates.addEventListener("change", syncEmailField);
+
   el.realismMode.addEventListener("change", renderOdds);
   el.btnShred.addEventListener("click", runShredder);
   el.btnShredDone.addEventListener("click", function () {
@@ -2453,6 +3048,7 @@
     String(4000 + Math.floor(Math.random() * 5999)).padStart(5, "0");
   renderChrome();
   renderCvChrome();
+  renderStoryChrome();
   renderLedger();
   renderDeck();
 
