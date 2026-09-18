@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Absage — a job application simulator in German and English. Every application gets answered in seconds, with the honest reason nobody ever gives you. Ein Bewerbungssimulator für alle, die geghostet werden.">
+<meta name="description" content="Neinbox — a job application simulator in German and English. Every application gets answered in seconds, with the honest reason nobody ever gives you. Ein Bewerbungssimulator für alle, die geghostet werden.">
 <style>
   :root { color-scheme: light dark; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
   html, body { height: 100%; }
@@ -12,7 +12,9 @@
   [hidden] { display: none !important; }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
-<title>Absage — Bewerbungssimulator</title>
+<title>Neinbox — Bewerbungssimulator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root {
     --ground: #E4E6E2;
@@ -589,6 +591,268 @@
   :root[data-theme="dark"] .truth .btn,
   :root:not([data-theme="light"]) .truth .btn { }
 
+
+  /* ---------- CV intake ---------- */
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    box-shadow: var(--shadow);
+    padding: 24px 22px 20px;
+  }
+  .panel h2 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: -.015em;
+    margin: 10px 0 6px;
+    text-wrap: balance;
+  }
+  .panel .lede { color: var(--ink-2); font-size: 13.5px; margin: 0 0 18px; line-height: 1.5; }
+
+  .dropzone {
+    border: 2px dashed var(--rule);
+    background: var(--paper-2);
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .dropzone:hover, .dropzone.hot { border-color: var(--seal); background: var(--paper); }
+  .dropzone:focus-visible { outline: 2px solid var(--seal); outline-offset: 2px; }
+  .dropzone .big {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 15px;
+    display: block;
+  }
+  .dropzone .small {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: block;
+    margin-top: 7px;
+  }
+  .dropzone.err { border-color: var(--stamp); }
+
+  .paste-toggle {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    background: none;
+    border: 0;
+    padding: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .05em;
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .paste-toggle:hover { color: var(--ink); }
+  #pasteArea {
+    width: 100%;
+    margin-top: 10px;
+    min-height: 130px;
+    padding: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    resize: vertical;
+  }
+  #pasteArea:focus-visible { outline: 2px solid var(--seal); outline-offset: -1px; }
+
+  .privacy {
+    margin-top: 16px;
+    border-left: 2px solid var(--seal);
+    background: var(--paper-2);
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--ink-2);
+  }
+  .privacy b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- analysis ---------- */
+  .steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .steps li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-3);
+    opacity: 0;
+    animation: fade .35s ease forwards;
+  }
+  .steps li.done { color: var(--ink); }
+  .steps .tick { color: var(--seal); flex: none; width: 14px; }
+
+  /* ---------- match report ---------- */
+  .readout { margin: 0 0 18px; display: flex; flex-direction: column; gap: 0; }
+  .readout .row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 13.5px;
+  }
+  .readout .row:last-child { border-bottom: 0; }
+  .readout dt {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    flex: none;
+  }
+  .readout .leader { flex: 1; border-bottom: 1px dotted var(--rule); transform: translateY(-3px); min-width: 8px; }
+  .readout dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  .readout .row.bad dd { color: var(--stamp); font-weight: 600; }
+
+  .score {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    border: 1px solid var(--seal);
+    background: var(--paper-2);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .score .k {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    max-width: 62%;
+    line-height: 1.5;
+  }
+  .score .v {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 34px;
+    color: var(--seal);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+  }
+
+  .rec-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .rec {
+    border: 1px solid var(--rule);
+    background: var(--paper-2);
+    padding: 12px 14px;
+  }
+  .rec .r-firm {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--seal);
+  }
+  .rec .r-role { font-family: var(--sans); font-weight: 600; font-size: 14.5px; margin-top: 3px; line-height: 1.3; }
+  .rec .r-why {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    margin-top: 5px;
+    line-height: 1.45;
+  }
+
+  /* ---------- shredder ---------- */
+  .shred-stage {
+    position: relative;
+    height: 300px;
+    margin: 4px 0 0;
+    overflow: hidden;
+  }
+  .doc {
+    position: absolute;
+    inset: 0;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    padding: 16px 18px;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    line-height: 1.75;
+    color: var(--ink-2);
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: hidden;
+  }
+  .doc-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .strip { position: absolute; top: 0; bottom: 0; overflow: hidden; will-change: transform, opacity; }
+  .strip > .doc { width: var(--docw); left: var(--offx); }
+  .strip.go { animation: shred 1.15s cubic-bezier(.4,.05,.6,1) forwards; }
+  @keyframes shred {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    18%  { transform: translateY(6px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(330px) rotate(var(--spin)); opacity: 0; }
+  }
+  .blades {
+    position: absolute;
+    left: 0; right: 0;
+    top: 52%;
+    height: 10px;
+    background: repeating-linear-gradient(90deg, var(--ink-3) 0 6px, transparent 6px 12px);
+    opacity: 0;
+    transition: opacity .2s ease;
+  }
+  .blades.on { opacity: .5; }
+  .shred-done {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity .5s ease;
+    pointer-events: none;
+  }
+  .shred-done.on { opacity: 1; }
+  .shred-done .mark {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--seal);
+    border: 2.5px solid var(--seal);
+    padding: 7px 14px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .strip.go { animation-duration: .01ms; }
+    .steps li { animation-duration: .01ms; }
+  }
+
+  .btn.ghostly { background: transparent; }
+  .cv-entry {
+    margin-top: 10px;
+    width: 100%;
+  }
+
   .colophon {
     margin-top: 26px;
     padding-top: 14px;
@@ -608,7 +872,7 @@
 <div class="shell">
   <header class="masthead">
     <div class="masthead-row">
-      <div class="wordmark">Absage</div>
+      <div class="wordmark">Neinbox</div>
       <div class="lang-switch" role="group" aria-label="Sprache / Language">
         <button type="button" id="langDe" aria-pressed="true">DE</button>
         <button type="button" id="langEn" aria-pressed="false">EN</button>
@@ -638,6 +902,11 @@
         </button>
       </div>
 
+      <button class="btn ghostly cv-entry" id="btnCv" type="button">
+        <span id="cvEntryLabel">Lebenslauf hochladen</span>
+        <small id="cvEntryHint">Für maßgeschneiderte Stellenvorschläge</small>
+      </button>
+
       <div class="mode">
         <input type="checkbox" id="realismMode">
         <label for="realismMode">
@@ -652,6 +921,101 @@
         <div class="stat accent"><dt id="lblGhosted">Geghostet</dt><dd id="statGhosted">0</dd></div>
         <div class="stat"><dt id="lblTime">⌀ Antwortzeit</dt><dd id="statTime">—</dd></div>
       </dl>
+    </section>
+
+    <!-- ============ CV INTAKE ============ -->
+    <section id="screenCv" class="panel" hidden>
+      <p class="eyebrow" id="cvEyebrow">Anlage 1 · Bewerbungsunterlagen</p>
+      <h2 id="cvHead">Laden Sie Ihren Lebenslauf hoch.</h2>
+      <p class="lede" id="cvLede">Wir gleichen Ihr Profil mit allen offenen Stellen ab und schlagen Ihnen passende Positionen vor.</p>
+
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-describedby="privacyNote">
+        <span class="big" id="dropBig">Datei auswählen oder hierher ziehen</span>
+        <span class="small" id="dropSmall">PDF · DOCX · TXT · max. 10 MB</span>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.md,application/pdf,text/plain" hidden>
+
+      <button class="paste-toggle" id="pasteToggle" type="button">Oder Text direkt einfügen</button>
+      <textarea id="pasteArea" hidden placeholder="Lebenslauf hier einfügen …"></textarea>
+
+      <p class="privacy" id="privacyNote"></p>
+
+      <div class="controls">
+        <button class="btn" id="btnCvBack" type="button">
+          <span id="cvBackLabel">Zurück</span>
+          <small id="cvBackHint">Ohne Lebenslauf fortfahren</small>
+        </button>
+        <button class="btn apply" id="btnCvGo" type="button" disabled>
+          <span id="cvGoLabel">Auswerten</span>
+          <small id="cvGoHint">Keine Datei gewählt</small>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ ANALYSIS ============ -->
+    <section id="screenAnalysis" class="panel" hidden>
+      <p class="eyebrow" id="anEyebrow">Automatisierte Vorauswahl · läuft</p>
+      <h2 id="anHead">Ihr Profil wird ausgewertet.</h2>
+      <p class="lede" id="anLede">Dies geschieht vollständig in diesem Browserfenster.</p>
+      <ol class="steps" id="steps"></ol>
+    </section>
+
+    <!-- ============ MATCH REPORT ============ -->
+    <section id="screenReport" hidden>
+      <div class="panel">
+        <p class="eyebrow" id="rpEyebrow">Auswertung abgeschlossen · Aktenzeichen intern</p>
+        <h2 id="rpHead">Ihr Profil im Abgleich.</h2>
+
+        <div class="score">
+          <span class="k" id="rpScoreLabel">Übereinstimmung mit unseren offenen Stellen</span>
+          <span class="v" id="rpScore">97%</span>
+        </div>
+
+        <dl class="readout" id="rpReadout"></dl>
+
+        <p class="eyebrow" id="rpRecLabel" style="margin:20px 0 10px">Für Sie ausgewählt</p>
+        <ul class="rec-list" id="rpRecs"></ul>
+
+        <p class="privacy" id="rpNote" style="margin-top:18px"></p>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="btnShred" type="button">
+          <span id="shredLabel">Unterlagen vernichten</span>
+          <small id="shredHint">Aktenvernichter</small>
+        </button>
+        <button class="btn apply" id="btnRecDeck" type="button">
+          <span id="recDeckLabel">Stellen ansehen</span>
+          <small id="recDeckHint">Nach Eignung sortiert</small>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ SHREDDER ============ -->
+    <section id="screenShred" hidden>
+      <div class="panel">
+        <p class="eyebrow" id="shEyebrow">Aktenvernichtung · DIN 66399</p>
+        <h2 id="shHead">Ihre Unterlagen werden vernichtet.</h2>
+        <p class="lede" id="shLede">Endgültig und ohne Kopie.</p>
+
+        <div class="shred-stage" id="shredStage">
+          <div class="doc" id="shredDoc"><span class="doc-title" id="shredDocTitle">Lebenslauf</span><span id="shredDocBody"></span></div>
+          <div class="blades" id="blades"></div>
+          <div class="shred-done" id="shredDone">
+            <span class="mark" id="shredMark">Vernichtet</span>
+            <span class="eyebrow" id="shredMarkSub">0 Bytes verbleiben</span>
+          </div>
+        </div>
+
+        <p class="privacy" id="shredTruth" style="margin-top:18px"></p>
+      </div>
+
+      <div class="controls">
+        <button class="btn apply wide" id="btnShredDone" type="button" disabled>
+          <span id="shredDoneLabel">Weiter</span>
+          <small id="shredDoneHint">Bitte warten</small>
+        </button>
+      </div>
     </section>
 
     <!-- ============ PENDING ============ -->
@@ -795,11 +1159,75 @@
       truthAgg: "In Deutschland schweigen Arbeitgeber nicht aus Faulheit. Eine begründete Absage ist nach dem AGG ein potenzielles Beweismittel — Schweigen ist die juristisch sichere Variante. Das Problem ist gebaut. Man kann es also auch anders bauen.",
       restart: "Von vorn anfangen",
       restartHint: "Wie im echten Leben",
-      colophon: "Absage · Ein Bewerbungssimulator. Alle Unternehmen, Personen und Absagen sind frei erfunden.<br>Jede Ähnlichkeit mit Ihrem Posteingang ist beabsichtigt.",
+      colophon: "Neinbox · Ein Bewerbungssimulator. Alle Unternehmen, Personen und Absagen sind frei erfunden.<br>Jede Ähnlichkeit mit Ihrem Posteingang ist beabsichtigt.",
       specs: { place: "Ort", pay: "Gehalt", exp: "Erfahrung", lang: "Sprache" },
       appsWord: "Bewerbungen",
       verdictYes: "Bewerben",
-      verdictNo: "Weg damit"
+      verdictNo: "Weg damit",
+      cvEntry: "Lebenslauf hochladen",
+      cvEntryHint: "Für maßgeschneiderte Stellenvorschläge",
+      cvEyebrow: "Anlage 1 · Bewerbungsunterlagen",
+      cvHead: "Laden Sie Ihren Lebenslauf hoch.",
+      cvLede: "Wir gleichen Ihr Profil mit allen offenen Stellen ab und schlagen Ihnen passende Positionen vor.",
+      dropBig: "Datei auswählen oder hierher ziehen",
+      dropSmall: "PDF · DOCX · TXT · max. 10 MB",
+      pasteToggle: "Oder Text direkt einfügen",
+      pastePlaceholder: "Lebenslauf hier einfügen …",
+      privacy: "<b>Ihre Datei wird nicht hochgeladen.</b> Sie wird in diesem Browserfenster gelesen und nirgendwohin gesendet — nachprüfbar im Netzwerk-Tab Ihres Browsers. Nichts wird gespeichert. Schließen Sie den Tab, und die Daten sind weg.",
+      cvBack: "Zurück",
+      cvBackHint: "Ohne Lebenslauf fortfahren",
+      cvGo: "Auswerten",
+      cvGoNone: "Keine Datei gewählt",
+      cvGoReady: function (name) { return name; },
+      cvErrRead: "Datei konnte nicht gelesen werden. Fügen Sie den Text bitte direkt ein.",
+      cvErrBig: "Datei zu groß (max. 10 MB).",
+      cvErrEmpty: "Kein Text gefunden. Fügen Sie den Text bitte direkt ein.",
+      anEyebrow: "Automatisierte Vorauswahl · läuft",
+      anHead: "Ihr Profil wird ausgewertet.",
+      anLede: "Dies geschieht vollständig in diesem Browserfenster.",
+      steps: [
+        "Dokument gelesen",
+        "Schlagwörter extrahiert",
+        "Berufserfahrung geschätzt",
+        "Mit {n} offenen Stellen abgeglichen",
+        "Eignung berechnet",
+        "Ergebnis gerundet"
+      ],
+      rpEyebrow: "Auswertung abgeschlossen",
+      rpHead: "Ihr Profil im Abgleich.",
+      rpScoreLabel: "Übereinstimmung mit unseren offenen Stellen",
+      rpRecLabel: "Für Sie ausgewählt",
+      rows: {
+        chars: "Zeichen gelesen",
+        years: "Berufserfahrung erkannt",
+        lead: "Führungssignale",
+        skills: "Fähigkeiten erkannt",
+        used: "Davon berücksichtigt",
+        jobs: "Stellen abgeglichen",
+        human: "Von einem Menschen gelesen"
+      },
+      yearsVal: function (y) { return y + " Jahre"; },
+      rpNote: "Die Auswahl erfolgte nach Verfügbarkeit, nicht nach Eignung. Das ist branchenüblich.",
+      recWhy: {
+        overqualified: function (y) { return "Ihr Profil zeigt " + y + " Jahre Erfahrung. Diese Position verlangt keine."; },
+        lead: function (n) { return "Sie hatten " + n + " Führungssignale im Lebenslauf. Hier berichten Sie an jemanden mit weniger."; },
+        word: function (w) { return "Übereinstimmung: das Wort „" + w + "“ kommt in beiden Dokumenten vor."; },
+        none: "Keine inhaltliche Übereinstimmung. Die Stelle ist aber noch offen."
+      },
+      shredLabel: "Unterlagen vernichten",
+      shredHint: "Aktenvernichter",
+      recDeck: "Stellen ansehen",
+      recDeckHint: "Nach Eignung sortiert",
+      shEyebrow: "Aktenvernichtung · DIN 66399",
+      shHead: "Ihre Unterlagen werden vernichtet.",
+      shLede: "Endgültig und ohne Kopie.",
+      shredDocTitle: "Lebenslauf",
+      shredMark: "Vernichtet",
+      shredMarkSub: "0 Bytes verbleiben",
+      shredTruth: "<b>Die Animation ist Theater. Was dahinter steht, nicht:</b> Ihre Datei hat diesen Browser-Tab nie verlassen. Es gibt keinen Server, keine Datenbank, kein Logfile. Der Text lag in einer Variablen im Arbeitsspeicher und ist jetzt überschrieben. Das ist der ganze Vorgang — und mehr, als die meisten Bewerbungsportale von sich behaupten können.",
+      shredDoneLabel: "Weiter",
+      shredWait: "Bitte warten",
+      shredReady: "Nichts verbleibt"
     },
     en: {
       portal: "Application portal · simulation",
@@ -843,11 +1271,75 @@
       truthAgg: "German employers don't stay silent out of laziness. Under the AGG — the General Equal Treatment Act — a stated reason for rejection is potential evidence in a discrimination claim, and applicants have two months to file. Silence is the legally safe option. The problem is built. Which means it can be built differently.",
       restart: "Start over",
       restartHint: "Just like real life",
-      colophon: "Absage · A job application simulator. All companies, people and rejections are fictional.<br>Any resemblance to your actual inbox is entirely intended.",
+      colophon: "Neinbox · A job application simulator. All companies, people and rejections are fictional.<br>Any resemblance to your actual inbox is entirely intended.",
       specs: { place: "Location", pay: "Salary", exp: "Experience", lang: "Language" },
       appsWord: "applicants",
       verdictYes: "Apply",
-      verdictNo: "Bin it"
+      verdictNo: "Bin it",
+      cvEntry: "Upload your CV",
+      cvEntryHint: "For tailored job recommendations",
+      cvEyebrow: "Annex 1 · Application documents",
+      cvHead: "Upload your CV.",
+      cvLede: "We will match your profile against every open position and recommend the ones that suit you.",
+      dropBig: "Choose a file or drag it here",
+      dropSmall: "PDF · DOCX · TXT · max. 10 MB",
+      pasteToggle: "Or paste the text instead",
+      pastePlaceholder: "Paste your CV here …",
+      privacy: "<b>Your file is not uploaded.</b> It is read inside this browser tab and sent nowhere — check your browser's network tab if you like. Nothing is stored. Close the tab and it is gone.",
+      cvBack: "Back",
+      cvBackHint: "Continue without a CV",
+      cvGo: "Analyse",
+      cvGoNone: "No file selected",
+      cvGoReady: function (name) { return name; },
+      cvErrRead: "Could not read that file. Please paste the text instead.",
+      cvErrBig: "File too large (max. 10 MB).",
+      cvErrEmpty: "No text found. Please paste the text instead.",
+      anEyebrow: "Automated pre-selection · running",
+      anHead: "Your profile is being analysed.",
+      anLede: "This happens entirely inside this browser window.",
+      steps: [
+        "Document read",
+        "Keywords extracted",
+        "Experience estimated",
+        "Matched against {n} open positions",
+        "Suitability calculated",
+        "Result rounded"
+      ],
+      rpEyebrow: "Analysis complete",
+      rpHead: "Your profile, matched.",
+      rpScoreLabel: "Match with our open positions",
+      rpRecLabel: "Selected for you",
+      rows: {
+        chars: "Characters read",
+        years: "Experience detected",
+        lead: "Leadership signals",
+        skills: "Skills recognised",
+        used: "Skills actually used",
+        jobs: "Positions matched",
+        human: "Read by a human"
+      },
+      yearsVal: function (y) { return y + " years"; },
+      rpNote: "Selection was made by availability, not suitability. This is industry standard.",
+      recWhy: {
+        overqualified: function (y) { return "Your profile shows " + y + " years of experience. This position requires none."; },
+        lead: function (n) { return "You showed " + n + " leadership signals. Here you would report to someone with fewer."; },
+        word: function (w) { return "Match found: the word “" + w + "” appears in both documents."; },
+        none: "No substantive match. The role is still open, though."
+      },
+      shredLabel: "Shred documents",
+      shredHint: "Document destruction",
+      recDeck: "View positions",
+      recDeckHint: "Sorted by suitability",
+      shEyebrow: "Document destruction · DIN 66399",
+      shHead: "Your documents are being destroyed.",
+      shLede: "Permanently, and without a copy.",
+      shredDocTitle: "Curriculum Vitae",
+      shredMark: "Destroyed",
+      shredMarkSub: "0 bytes remain",
+      shredTruth: "<b>The animation is theatre. What sits behind it is not:</b> your file never left this browser tab. There is no server, no database, no log file. The text sat in a variable in memory and has now been overwritten. That is the entire process — which is more than most application portals can claim.",
+      shredDoneLabel: "Continue",
+      shredWait: "Please wait",
+      shredReady: "Nothing remains"
     }
   };
 
@@ -858,7 +1350,7 @@
      ======================================================================= */
   var JOBS = [
     {
-      firm: "Nordlicht Retail Group GmbH", apps: 847, sig: "M. Brandhorst", flagLang: true,
+      firm: "Nordlicht Retail Group GmbH", level: 4, tags: ["retail","marketing","brand","fmcg","handel","einzelhandel"], apps: 847, sig: "M. Brandhorst", flagLang: true,
       de: { role: "Senior Manager Retail Marketing (m/w/d)", place: "Berlin-Mitte · 4 Tage vor Ort",
             pay: "Wettbewerbsfähig", exp: "8–10 Jahre", lang: "Deutsch C2 (verhandlungssicher)",
             perks: "Obstkorb, Kickertisch, Duzkultur, „flache Hierarchien“", posted: "vor 4 Monaten" },
@@ -867,7 +1359,7 @@
             perks: "Fruit basket, foosball table, first-name basis, “flat hierarchies”", posted: "4 months ago" }
     },
     {
-      firm: "Synergiewerk Berlin GmbH & Co. KG", apps: 1204, sig: "Dr. K. Reuter-Lang", flagLang: true,
+      firm: "Synergiewerk Berlin GmbH & Co. KG", level: 5, tags: ["brand","experience","strategy","marke","kommunikation"], apps: 1204, sig: "Dr. K. Reuter-Lang", flagLang: true,
       de: { role: "Head of Brand Experience (m/w/d)", place: "Hybrid · 2 Tage Homeoffice, verhandelbar (nicht verhandelbar)",
             pay: "Nach Vereinbarung", exp: "Mind. 12 Jahre", lang: "Deutsch C1, Englisch fließend",
             perks: "Purpose-getriebenes Umfeld, Hund im Büro, kein Budget", posted: "vor 7 Wochen" },
@@ -876,7 +1368,7 @@
             perks: "Purpose-driven environment, office dog, no budget", posted: "7 weeks ago" }
     },
     {
-      firm: "Kaufhaus Morgenrot AG", apps: 2310, sig: "S. Ohlendorf", flagLang: true,
+      firm: "Kaufhaus Morgenrot AG", level: 1, tags: ["marketing","retail","handel"], apps: 2310, sig: "S. Ohlendorf", flagLang: true,
       de: { role: "Junior Marketing Manager (m/w/d)", place: "Berlin-Tempelhof · Vollzeit",
             pay: "38.000 € p. a.", exp: "10+ Jahre zwingend erforderlich", lang: "Deutsch Muttersprache",
             perks: "Personalrabatt 15 %, Jobticket (anteilig)", posted: "vor 5 Monaten" },
@@ -885,7 +1377,7 @@
             perks: "15% staff discount, transit pass (partial)", posted: "5 months ago" }
     },
     {
-      firm: "Meridian International Brands SE", apps: 4188, sig: "P. Lindqvist", flagLang: true,
+      firm: "Meridian International Brands SE", level: 4, tags: ["brand","global","fmcg","marke","international"], apps: 4188, sig: "P. Lindqvist", flagLang: true,
       de: { role: "Global Brand Manager (all genders)", place: "Berlin-Mitte · internationales Team",
             pay: "Wettbewerbsfähig", exp: "8+ Jahre, globale Markenführung",
             lang: "Deutsch C2 — trotz englischer Ausschreibung und englischsprachigem Team",
@@ -896,7 +1388,7 @@
             perks: "“We speak English here!” (Your contract will not be)", posted: "3 weeks ago" }
     },
     {
-      firm: "Kreuzwerk Consumer Brands GmbH", apps: 663, sig: "T. Hübner", flagLang: true,
+      firm: "Kreuzwerk Consumer Brands GmbH", level: 5, tags: ["insights","consumer","research","marktforschung","data"], apps: 663, sig: "T. Hübner", flagLang: true,
       de: { role: "Director Consumer Insights (m/w/d)", place: "Berlin-Neukölln · 5 Tage vor Ort",
             pay: "Wettbewerbsfähig", exp: "15 Jahre, davon 5 im DACH-Raum",
             lang: "Deutsch C2, weitere Sprachen von Vorteil (nicht wirklich)",
@@ -907,7 +1399,7 @@
             perks: "Agile mindset, fruit, ownership from day one", posted: "3 months ago" }
     },
     {
-      firm: "Glückauf Naturkosmetik GmbH", apps: 1891, sig: "A. Pflüger", flagLang: true,
+      firm: "Glückauf Naturkosmetik GmbH", level: 0, tags: ["communications","brand","kommunikation","social"], apps: 1891, sig: "A. Pflüger", flagLang: true,
       de: { role: "Werkstudent:in Markenkommunikation", place: "Berlin-Wedding · 20 Std./Woche",
             pay: "13,50 €/Std.", exp: "Erste Führungserfahrung erwünscht", lang: "Deutsch C2",
             perks: "Sinnstiftende Arbeit, Yoga donnerstags, Wasser umsonst", posted: "vor 6 Wochen" },
@@ -916,7 +1408,7 @@
             perks: "Meaningful work, yoga on Thursdays, free water", posted: "6 weeks ago" }
     },
     {
-      firm: "Textilwerk Spandau GmbH", apps: 402, sig: "R. Dettmann", flagLang: true,
+      firm: "Textilwerk Spandau GmbH", level: 4, tags: ["category","retail","merchandising","einzelhandel","textil"], apps: 402, sig: "R. Dettmann", flagLang: true,
       de: { role: "Teamleitung Category Management (m/w/d)", place: "Berlin-Spandau · kein Homeoffice",
             pay: "Attraktives Gehaltspaket", exp: "10 Jahre Einzelhandel", lang: "Deutsch verhandlungssicher",
             perks: "Betriebskantine, 28 Urlaubstage, Weihnachtsfeier", posted: "vor 9 Monaten" },
@@ -925,7 +1417,7 @@
             perks: "Staff canteen, 28 holiday days, Christmas party", posted: "9 months ago" }
     },
     {
-      firm: "PLATTFORM Labs GmbH", apps: 3057, sig: "J. Weiß", flagLang: true,
+      firm: "PLATTFORM Labs GmbH", level: 4, tags: ["growth","performance","digital","ecommerce","saas"], apps: 3057, sig: "J. Weiß", flagLang: true,
       de: { role: "Growth Marketing Lead (all genders)", place: "Remote-first (Berlin-Pflicht)",
             pay: "Equity-lastig", exp: "„Hands-on Mentalität“", lang: "Englisch — aber alle Meetings auf Deutsch",
             perks: "Unbegrenzter Urlaub (niemand nimmt ihn), MacBook", posted: "vor 2 Monaten" },
@@ -934,7 +1426,7 @@
             perks: "Unlimited holiday (nobody takes it), MacBook", posted: "2 months ago" }
     },
     {
-      firm: "Deutsche Einzelhandels-Allianz e. V.", apps: 178, sig: "Dr. H. Vollmer", flagLang: true,
+      firm: "Deutsche Einzelhandels-Allianz e. V.", level: 3, tags: ["retail","marketing","handel","verband"], apps: 178, sig: "Dr. H. Vollmer", flagLang: true,
       de: { role: "Referent:in Handelsmarketing (m/w/d)", place: "Berlin-Charlottenburg · TVöD E 13",
             pay: "Nach Tarif", exp: "Abgeschlossenes Hochschulstudium", lang: "Deutsch Muttersprache zwingend",
             perks: "Sicherer Arbeitsplatz, Fortbildung, Faxgerät", posted: "vor 11 Monaten" },
@@ -943,7 +1435,7 @@
             lang: "German native speaker, mandatory", perks: "Job security, training, fax machine", posted: "11 months ago" }
     },
     {
-      firm: "VELOCITA Mobility SE", apps: 1442, sig: "C. Ammersbach", flagLang: true,
+      firm: "VELOCITA Mobility SE", level: 4, tags: ["brand","fmcg","electronics","dach","marke"], apps: 1442, sig: "C. Ammersbach", flagLang: true,
       de: { role: "Senior Brand Manager DACH (m/w/d)", place: "Berlin-Friedrichshain · 3 Tage vor Ort",
             pay: "Wettbewerbsfähig", exp: "10+ Jahre FMCG oder Consumer Electronics", lang: "Deutsch C2, Englisch C1",
             perks: "Jobrad, Urban Sports Club, „wir sind wie eine Familie“", posted: "vor 5 Wochen" },
@@ -952,7 +1444,7 @@
             perks: "Company bike, gym card, “we're like a family here”", posted: "5 weeks ago" }
     },
     {
-      firm: "Möbelhaus Zukunft GmbH", apps: 96, sig: "B. Krolow", flagLang: true,
+      firm: "Möbelhaus Zukunft GmbH", level: 4, tags: ["marketing","communications","retail","kommunikation"], apps: 96, sig: "B. Krolow", flagLang: true,
       de: { role: "Leitung Marketing & Kommunikation (m/w/d)", place: "Brandenburg an der Havel · Umzug erwartet",
             pay: "Verhandelbar", exp: "Mind. 8 Jahre", lang: "Deutsch C2",
             perks: "Firmenwagen (nach 2 Jahren), Kantine, Parkplatz", posted: "vor 8 Monaten" },
@@ -961,7 +1453,7 @@
             perks: "Company car (after 2 years), canteen, parking space", posted: "8 months ago" }
     },
     {
-      firm: "Hanseatische Konsumgüter AG", apps: 728, sig: "F. Oldenburg", flagLang: true,
+      firm: "Hanseatische Konsumgüter AG", level: 5, tags: ["retail","excellence","handel","einzelhandel","fmcg"], apps: 728, sig: "F. Oldenburg", flagLang: true,
       de: { role: "Head of Retail Excellence (m/w/d)", place: "Hamburg · Berlin möglich (ist es nicht)",
             pay: "Wettbewerbsfähig", exp: "12 Jahre, Konzernerfahrung Pflicht", lang: "Deutsch verhandlungssicher",
             perks: "Deutschlandticket, Gesundheitsbudget, Obstkorb", posted: "vor 3 Wochen" },
@@ -970,7 +1462,7 @@
             perks: "Transit pass, health budget, fruit basket", posted: "3 weeks ago" }
     },
     {
-      firm: "Studio Grünspan UG (haftungsbeschränkt)", apps: 1633, sig: "L. Marzahn", flagLang: true,
+      firm: "Studio Grünspan UG (haftungsbeschränkt)", level: 2, tags: ["marketing","generalist","social","content"], apps: 1633, sig: "L. Marzahn", flagLang: true,
       de: { role: "Marketing Generalist:in (m/w/d)", place: "Berlin-Kreuzberg · 4 Tage",
             pay: "42.000 – 46.000 € p. a.", exp: "Sie machen alles. Wirklich alles.", lang: "Deutsch C2",
             perks: "Feelgood-Manager, Tischtennis, Craft-Bier freitags", posted: "vor 6 Monaten" },
@@ -1050,7 +1542,7 @@
                                  en: "No reply. Status still: “In progress”.", final: true }
   ];
 
-  var STORE_KEY = "absage.ledger.v2";
+  var STORE_KEY = "neinbox.ledger.v3";
 
   var state = {
     lang: "de", idx: 0, sent: 0, replies: 0, ghosted: 0,
@@ -1069,7 +1561,7 @@
    "lblGhosted","lblTime","pendingEyebrow","letterCity","letterSpeedLabel","letterP0",
    "letterP1","letterP2","letterP3","letterDisclaimer","nextLabel","nextHint",
    "ghostEyebrow","ghostNextLabel","ghostNextHint","truthEyebrow","restartLabel",
-   "restartHint","colophon"].forEach(function (id) { el[id] = document.getElementById(id); });
+   "restartHint","colophon","btnCv","cvEntryLabel","cvEntryHint","screenCv","screenAnalysis","screenReport","screenShred","cvEyebrow","cvHead","cvLede","dropzone","dropBig","dropSmall","fileInput","pasteToggle","pasteArea","privacyNote","btnCvBack","cvBackLabel","cvBackHint","btnCvGo","cvGoLabel","cvGoHint","anEyebrow","anHead","anLede","steps","rpEyebrow","rpHead","rpScoreLabel","rpScore","rpReadout","rpRecLabel","rpRecs","rpNote","btnShred","shredLabel","shredHint","btnRecDeck","recDeckLabel","recDeckHint","shEyebrow","shHead","shLede","shredStage","shredDoc","shredDocTitle","shredDocBody","blades","shredDone","shredMark","shredMarkSub","shredTruth","btnShredDone","shredDoneLabel","shredDoneHint"].forEach(function (id) { el[id] = document.getElementById(id); });
 
   function t() { return UI[state.lang]; }
   function jobText(job) { return job[state.lang]; }
@@ -1129,7 +1621,8 @@
   }
   function groupNum(n) { return n.toLocaleString(state.lang === "de" ? "de-DE" : "en-GB"); }
   function show(name) {
-    ["screenDeck","screenPending","screenLetter","screenGhost","screenTruth"]
+    ["screenDeck","screenPending","screenLetter","screenGhost","screenTruth",
+     "screenCv","screenAnalysis","screenReport","screenShred"]
       .forEach(function (k) { el[k].hidden = (k !== name); });
   }
   function currentJob() { return JOBS[state.order[state.idx % state.order.length]]; }
@@ -1400,8 +1893,332 @@
     state.lang = lang;
     save();
     renderChrome();
+    renderCvChrome();
     renderLedger();
     renderDeck();
+  }
+
+
+  /* =======================================================================
+     CV intake. Everything below runs in this tab: the file is read with the
+     File API, parsed in memory, and never sent anywhere — there is no server
+     to send it to. `cvText` is the only place the text exists, and shredding
+     overwrites it.
+     ======================================================================= */
+  var MAX_BYTES = 10 * 1024 * 1024;
+  var cvText = "";
+  var cvName = "";
+  var cvProfile = null;
+
+  var SKILL_WORDS = [
+    "marketing","brand","retail","ecommerce","e-commerce","crm","seo","sea","social",
+    "content","kampagne","campaign","budget","category","merchandising","fmcg",
+    "consumer","insights","analytics","excel","powerpoint","sap","salesforce","hubspot",
+    "shopper","trade","launch","packaging","agentur","agency","stakeholder",
+    "leadership","strategy","strategie","kommunikation","communications","event",
+    "sustainability","nachhaltigkeit","dach","b2b","b2c","global","international",
+    "digital","performance","growth","research","marktforschung","data","textil",
+    "handel","einzelhandel","marke","verband","generalist","experience","saas",
+    "electronics"
+  ];
+  var LEAD_WORDS = [
+    "head of","director","leitung","leiter","senior","manager","lead","teamleitung",
+    "vice president","chief","prokurist","abteilungsleiter"
+  ];
+
+  function analyseCv(text) {
+    var lower = text.toLowerCase();
+    var nowYear = new Date().getFullYear();
+
+    // The earliest plausible year mentioned sets the career span.
+    var years = (text.match(/\b(19[7-9]\d|20[0-2]\d)\b/g) || [])
+      .map(Number)
+      .filter(function (y) { return y >= 1975 && y <= nowYear; });
+    var span = years.length ? Math.min(nowYear - Math.min.apply(null, years), 50) : 0;
+
+    var lead = 0;
+    LEAD_WORDS.forEach(function (w) { lead += lower.split(w).length - 1; });
+
+    var skills = SKILL_WORDS.filter(function (w) { return lower.indexOf(w) !== -1; });
+
+    return {
+      chars: text.length,
+      years: span,
+      lead: lead,
+      skills: skills,
+      // The single word the "matching" actually used. It is the joke, and it
+      // is also roughly what keyword matching really does.
+      usedWord: skills.length ? skills[Math.floor(Math.random() * Math.min(skills.length, 4))] : null
+    };
+  }
+
+  function scoreJobs(profile) {
+    // Deliberately perverse: rank by how far BELOW the candidate a role sits,
+    // the way a keyword matcher surfaces the jobs nobody else wants.
+    var ranked = JOBS.map(function (job) {
+      var overlap = (job.tags || []).filter(function (tg) {
+        return profile.skills.indexOf(tg) !== -1;
+      }).length;
+      return { job: job, overlap: overlap, level: job.level };
+    });
+    ranked.sort(function (a, b) {
+      if (a.level !== b.level) return (a.level || 0) - (b.level || 0);
+      return b.overlap - a.overlap;
+    });
+    return ranked;
+  }
+
+  function renderReport() {
+    var c = t(), pr = cvProfile;
+    el.rpEyebrow.textContent = c.rpEyebrow;
+    el.rpHead.textContent = c.rpHead;
+    el.rpScoreLabel.textContent = c.rpScoreLabel;
+    el.rpRecLabel.textContent = c.rpRecLabel;
+    el.rpNote.textContent = c.rpNote;
+    el.shredLabel.textContent = c.shredLabel;
+    el.shredHint.textContent = c.shredHint;
+    el.recDeckLabel.textContent = c.recDeck;
+    el.recDeckHint.textContent = c.recDeckHint;
+    if (!pr) return;
+
+    el.rpScore.textContent = pr.score + "%";
+
+    var rows = [
+      ["chars", groupNum(pr.chars), false],
+      ["years", c.yearsVal(pr.years), false],
+      ["lead", String(pr.lead), false],
+      ["skills", String(pr.skills.length), false],
+      ["used", pr.usedWord ? "1" : "0", true],
+      ["jobs", String(JOBS.length), false],
+      ["human", "0", true]
+    ];
+    el.rpReadout.textContent = "";
+    rows.forEach(function (r) {
+      var div = document.createElement("div");
+      div.className = "row" + (r[2] ? " bad" : "");
+      div.innerHTML = "<dt>" + c.rows[r[0]] + "</dt><span class=\"leader\"></span><dd>" + r[1] + "</dd>";
+      el.rpReadout.appendChild(div);
+    });
+
+    el.rpRecs.textContent = "";
+    pr.ranked.slice(0, 3).forEach(function (r, idx) {
+      var j = jobText(r.job);
+      var why;
+      if (idx === 0 && pr.years >= 6) why = c.recWhy.overqualified(pr.years);
+      else if (idx === 1 && pr.lead > 0) why = c.recWhy.lead(pr.lead);
+      else if (pr.usedWord) why = c.recWhy.word(pr.usedWord);
+      else why = c.recWhy.none;
+
+      var li = document.createElement("li");
+      li.className = "rec";
+      li.innerHTML = '<div class="r-firm">' + r.job.firm + '</div>' +
+                     '<div class="r-role">' + j.role + '</div>' +
+                     '<div class="r-why">' + why + '</div>';
+      el.rpRecs.appendChild(li);
+    });
+  }
+
+  /* ---------- file reading, all local ---------- */
+  function readFile(file) {
+    cvName = file.name;
+    if (file.size > MAX_BYTES) return Promise.reject(new Error("big"));
+    var ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (ext === "pdf") return readPdf(file);
+    if (ext === "docx") return readDocx(file);
+    return file.text();
+  }
+
+  function readPdf(file) {
+    if (typeof pdfjsLib === "undefined") return Promise.reject(new Error("nolib"));
+    try {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    } catch (e) { /* falls back to main-thread parsing */ }
+    return file.arrayBuffer().then(function (buf) {
+      return pdfjsLib.getDocument({ data: buf }).promise;
+    }).then(function (pdf) {
+      var pages = [];
+      for (var i = 1; i <= Math.min(pdf.numPages, 8); i++) pages.push(i);
+      return Promise.all(pages.map(function (n) {
+        return pdf.getPage(n)
+          .then(function (pg) { return pg.getTextContent(); })
+          .then(function (tc) {
+            return tc.items.map(function (it) { return it.str; }).join(" ");
+          });
+      })).then(function (parts) { return parts.join("\n"); });
+    });
+  }
+
+  function readDocx(file) {
+    if (typeof JSZip === "undefined") return Promise.reject(new Error("nolib"));
+    return file.arrayBuffer()
+      .then(function (buf) { return JSZip.loadAsync(buf); })
+      .then(function (zip) {
+        var f = zip.file("word/document.xml");
+        if (!f) throw new Error("nodoc");
+        return f.async("string");
+      })
+      .then(function (xml) {
+        return xml.replace(/<\/w:p>/g, "\n")
+                  .replace(/<[^>]+>/g, " ")
+                  .replace(/[ \t]+/g, " ")
+                  .trim();
+      });
+  }
+
+  function cvReady(text, label) {
+    var clean = (text || "").trim();
+    if (clean.length < 40) { cvError(t().cvErrEmpty); return; }
+    cvText = clean;
+    cvName = label || cvName || "CV";
+    el.dropzone.classList.remove("err");
+    el.btnCvGo.disabled = false;
+    el.cvGoHint.textContent = cvName;
+    el.dropBig.textContent = cvName;
+    el.dropSmall.textContent = groupNum(clean.length) +
+      (state.lang === "de" ? " Zeichen gelesen" : " characters read");
+  }
+
+  function cvError(msg) {
+    el.dropzone.classList.add("err");
+    el.dropSmall.textContent = msg;
+    el.btnCvGo.disabled = true;
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    el.dropSmall.textContent = state.lang === "de" ? "wird gelesen ..." : "reading ...";
+    readFile(file)
+      .then(function (txt) { cvReady(txt, file.name); })
+      .catch(function (err) {
+        cvError(err && err.message === "big" ? t().cvErrBig : t().cvErrRead);
+      });
+  }
+
+  /* ---------- analysis theatre ---------- */
+  var stepTimers = [];
+  function runAnalysis() {
+    stepTimers.forEach(clearTimeout);
+    stepTimers = [];
+    var c = t();
+    el.anEyebrow.textContent = c.anEyebrow;
+    el.anHead.textContent = c.anHead;
+    el.anLede.textContent = c.anLede;
+    el.steps.textContent = "";
+    show("screenAnalysis");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    var profile = analyseCv(cvText);
+    profile.score = 94 + Math.floor(Math.random() * 6);
+    profile.ranked = scoreJobs(profile);
+    cvProfile = profile;
+
+    c.steps.forEach(function (label, i) {
+      stepTimers.push(window.setTimeout(function () {
+        var li = document.createElement("li");
+        li.className = "done";
+        li.innerHTML = '<span class="tick">&#10003;</span><span>' +
+          label.replace("{n}", JOBS.length) + '</span>';
+        el.steps.appendChild(li);
+        if (i === c.steps.length - 1) {
+          stepTimers.push(window.setTimeout(function () {
+            renderReport();
+            show("screenReport");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }, 620));
+        }
+      }, 340 + i * 420));
+    });
+  }
+
+  /* ---------- shredder ---------- */
+  var STRIPS = 22;
+  function clearStrips() {
+    Array.prototype.slice.call(el.shredStage.querySelectorAll(".strip"))
+      .forEach(function (n) { n.parentNode.removeChild(n); });
+  }
+  function runShredder() {
+    var c = t();
+    el.shEyebrow.textContent = c.shEyebrow;
+    el.shHead.textContent = c.shHead;
+    el.shLede.textContent = c.shLede;
+    el.shredDocTitle.textContent = c.shredDocTitle;
+    el.shredMark.textContent = c.shredMark;
+    el.shredMarkSub.textContent = c.shredMarkSub;
+    el.shredTruth.innerHTML = c.shredTruth;
+    el.shredDoneLabel.textContent = c.shredDoneLabel;
+    el.shredDoneHint.textContent = c.shredWait;
+    el.btnShredDone.disabled = true;
+    el.shredDone.classList.remove("on");
+    el.blades.classList.remove("on");
+
+    // The paper carries the real text, so it is your document being destroyed.
+    el.shredDocBody.textContent = cvText.slice(0, 1400);
+    el.shredDoc.hidden = false;
+    clearStrips();
+
+    show("screenShred");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    window.setTimeout(function () {
+      var w = el.shredStage.clientWidth;
+      var stripW = w / STRIPS;
+      el.blades.classList.add("on");
+
+      for (var i = 0; i < STRIPS; i++) {
+        var strip = document.createElement("div");
+        strip.className = "strip";
+        strip.style.left = (i * stripW) + "px";
+        strip.style.width = stripW + "px";
+        strip.style.setProperty("--docw", w + "px");
+        strip.style.setProperty("--offx", (-i * stripW) + "px");
+        strip.style.setProperty("--spin", ((Math.random() * 40) - 20).toFixed(1) + "deg");
+        strip.appendChild(el.shredDoc.cloneNode(true));
+        el.shredStage.appendChild(strip);
+      }
+      el.shredDoc.hidden = true;
+
+      Array.prototype.forEach.call(el.shredStage.querySelectorAll(".strip"), function (st, i) {
+        window.setTimeout(function () { st.classList.add("go"); }, i * 34);
+      });
+
+      window.setTimeout(function () {
+        // The actual deletion: the only copy of the text is overwritten.
+        cvText = "";
+        cvName = "";
+        cvProfile = null;
+        clearStrips();
+        el.shredDocBody.textContent = "";
+        el.pasteArea.value = "";
+        el.fileInput.value = "";
+        el.blades.classList.remove("on");
+        el.shredDone.classList.add("on");
+        el.btnShredDone.disabled = false;
+        el.shredDoneHint.textContent = t().shredReady;
+      }, STRIPS * 34 + 1250);
+    }, 480);
+  }
+
+  /* ---------- CV screen chrome ---------- */
+  function renderCvChrome() {
+    var c = t();
+    el.cvEntryLabel.textContent = c.cvEntry;
+    el.cvEntryHint.textContent = c.cvEntryHint;
+    el.cvEyebrow.textContent = c.cvEyebrow;
+    el.cvHead.textContent = c.cvHead;
+    el.cvLede.textContent = c.cvLede;
+    el.pasteToggle.textContent = c.pasteToggle;
+    el.pasteArea.placeholder = c.pastePlaceholder;
+    el.privacyNote.innerHTML = c.privacy;
+    el.cvBackLabel.textContent = c.cvBack;
+    el.cvBackHint.textContent = c.cvBackHint;
+    el.cvGoLabel.textContent = c.cvGo;
+    if (!cvText) {
+      el.dropBig.textContent = c.dropBig;
+      el.dropSmall.textContent = c.dropSmall;
+      el.cvGoHint.textContent = c.cvGoNone;
+    }
+    if (cvProfile) renderReport();
   }
 
   /* ---------- wiring ---------- */
@@ -1419,6 +2236,78 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
+  el.btnCv.addEventListener("click", function () {
+    renderCvChrome();
+    show("screenCv");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  el.btnCvBack.addEventListener("click", function () {
+    show("screenDeck");
+  });
+  el.btnCvGo.addEventListener("click", function () {
+    if (cvText) runAnalysis();
+  });
+
+  el.dropzone.addEventListener("click", function () { el.fileInput.click(); });
+  el.dropzone.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.fileInput.click(); }
+  });
+  el.fileInput.addEventListener("change", function (e) {
+    handleFile(e.target.files && e.target.files[0]);
+  });
+  ["dragenter", "dragover"].forEach(function (evt) {
+    el.dropzone.addEventListener(evt, function (e) {
+      e.preventDefault();
+      el.dropzone.classList.add("hot");
+    });
+  });
+  ["dragleave", "drop"].forEach(function (evt) {
+    el.dropzone.addEventListener(evt, function (e) {
+      e.preventDefault();
+      el.dropzone.classList.remove("hot");
+    });
+  });
+  el.dropzone.addEventListener("drop", function (e) {
+    handleFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+  });
+  // The page must never accept a file dropped outside the zone.
+  ["dragover", "drop"].forEach(function (evt) {
+    document.addEventListener(evt, function (e) {
+      if (!el.dropzone.contains(e.target)) e.preventDefault();
+    });
+  });
+
+  el.pasteToggle.addEventListener("click", function () {
+    el.pasteArea.hidden = !el.pasteArea.hidden;
+    if (!el.pasteArea.hidden) el.pasteArea.focus();
+  });
+  el.pasteArea.addEventListener("input", function () {
+    var v = el.pasteArea.value.trim();
+    if (v.length >= 40) {
+      cvReady(v, state.lang === "de" ? "Eingefügter Text" : "Pasted text");
+    } else {
+      cvText = "";
+      el.btnCvGo.disabled = true;
+      el.cvGoHint.textContent = t().cvGoNone;
+    }
+  });
+
+  el.btnShred.addEventListener("click", runShredder);
+  el.btnShredDone.addEventListener("click", function () {
+    renderCvChrome();
+    show("screenDeck");
+  });
+  el.btnRecDeck.addEventListener("click", function () {
+    // Reorder the deck to the "tailored" ranking, then drop into it.
+    if (cvProfile) {
+      state.order = cvProfile.ranked.map(function (r) { return JOBS.indexOf(r.job); });
+      state.idx = 0;
+      renderDeck();
+    }
+    show("screenDeck");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
   document.addEventListener("keydown", function (e) {
     if (el.screenDeck.hidden) return;
     if (e.key === "ArrowRight") { e.preventDefault(); commit(true); }
@@ -1432,6 +2321,7 @@
   el.caseNo.textContent = "2026-BE-" +
     String(4000 + Math.floor(Math.random() * 5999)).padStart(5, "0");
   renderChrome();
+  renderCvChrome();
   renderLedger();
   renderDeck();
 
