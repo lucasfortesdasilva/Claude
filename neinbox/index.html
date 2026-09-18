@@ -320,10 +320,11 @@
     border-top: 1px solid var(--rule);
     padding-top: 14px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
   }
-  @media (max-width: 420px) { .ledger { grid-template-columns: repeat(2, 1fr); gap: 14px 10px; } }
+  @media (max-width: 520px) { .ledger { grid-template-columns: repeat(3, 1fr); gap: 14px 10px; } }
+  @media (max-width: 340px) { .ledger { grid-template-columns: repeat(2, 1fr); gap: 14px 10px; } }
   .stat dt {
     font-family: var(--mono);
     font-size: 9.5px;
@@ -336,11 +337,12 @@
     margin: 3px 0 0;
     font-family: var(--sans);
     font-weight: 600;
-    font-size: 21px;
+    font-size: 19px;
     font-variant-numeric: tabular-nums;
     letter-spacing: -.01em;
   }
   .stat.accent dd { color: var(--stamp); }
+  .stat.good dd { color: var(--seal); }
 
   .mode {
     margin-top: 16px;
@@ -433,6 +435,7 @@
     margin: 0 0 14px;
   }
   .reason q { font-size: 15.5px; quotes: "\201E" "\201C"; display: block; }
+  :root[lang="en"] .reason q { quotes: "\201C" "\201D"; }
   .reason .gloss {
     display: block;
     margin-top: 7px;
@@ -483,6 +486,18 @@
     font-size: 9px;
     letter-spacing: .1em;
     margin-top: 2px;
+  }
+  .letter.invite .reason { border-left-color: var(--seal); background: rgba(36, 82, 122, .07); }
+  :root[data-theme="dark"] .letter.invite .reason,
+  :root:not([data-theme="light"]) .letter.invite .reason { background: rgba(123, 166, 212, .12); }
+  .letter.invite .stamp { border-color: var(--seal); color: var(--seal); }
+  .odds {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--ink-3);
   }
   .disclaimer {
     margin-top: 20px;
@@ -912,6 +927,7 @@
         <label for="realismMode">
           <b id="modeTitle">Realismus-Modus</b>
           <span id="modeDesc">Statt einer Absage erhalten Sie, was Sie sonst erhalten: nichts. 90 Tage in 9 Sekunden.</span>
+          <span class="odds" id="modeOdds"></span>
         </label>
       </div>
 
@@ -919,6 +935,7 @@
         <div class="stat"><dt id="lblSent">Bewerbungen</dt><dd id="statSent">0</dd></div>
         <div class="stat"><dt id="lblReplies">Antworten</dt><dd id="statReplies">0</dd></div>
         <div class="stat accent"><dt id="lblGhosted">Geghostet</dt><dd id="statGhosted">0</dd></div>
+        <div class="stat good"><dt id="lblInvites">Einladungen</dt><dd id="statInvites">0</dd></div>
         <div class="stat"><dt id="lblTime">⌀ Antwortzeit</dt><dd id="statTime">—</dd></div>
       </dl>
     </section>
@@ -1029,7 +1046,7 @@
 
     <!-- ============ LETTER ============ -->
     <section id="screenLetter" hidden>
-      <article class="letter">
+      <article class="letter" id="letterCard">
         <div class="letter-head">
           <div class="from" id="letterFrom">—</div>
           <div class="letter-meta">
@@ -1130,7 +1147,10 @@
       lblSent: "Bewerbungen",
       lblReplies: "Antworten",
       lblGhosted: "Geghostet",
+      lblInvites: "Einladungen",
       lblTime: "⌀ Antwortzeit",
+      oddsNormal: function (r) { return "Antwortquote in diesem Modus: " + r + "%"; },
+      oddsReal: function (r) { return "Antwortquote in diesem Modus: " + r + "%. Viel Glück."; },
       pendingEyebrow: "Eingangsbestätigung · automatisch generiert",
       clockUnit: " Sek.",
       letterCity: "Berlin,",
@@ -1142,7 +1162,7 @@
       p1: "vielen Dank für Ihr Interesse an einer Tätigkeit in unserem Hause und für die Zeit, die Sie in Ihre Unterlagen investiert haben. Wir haben Ihre Bewerbung tatsächlich gelesen.",
       p2: "Wir müssen Ihnen mitteilen, dass wir uns gegen Sie entschieden haben. Aus Gründen, die Ihnen in der Realität niemand nennen würde, nennen wir sie Ihnen hier:",
       p3: "Diese Entscheidung ist keine Bewertung Ihrer Person, Ihrer Qualifikation oder Ihres Werdegangs. Das ist sie in der Regel nie. Wir wünschen Ihnen für Ihren weiteren beruflichen Werdegang alles Gute.",
-      disclaimer: "Simulation. Dieses Unternehmen existiert nicht. Diese Absage auch nicht. Das Gefühl schon.<br>Simulation. This company does not exist. Neither does this rejection. The feeling does.",
+      disclaimer: "Simulation. Dieses Unternehmen existiert nicht. Dieser Brief auch nicht. Das Gefühl schon.<br>Simulation. This company does not exist. Neither does this letter. The feeling does.",
       next: "Weiter bewerben",
       nextHint: "Es hilft ja nichts",
       ghostEyebrow: "Realismus-Modus · 90 Tage im Zeitraffer",
@@ -1227,7 +1247,14 @@
       shredTruth: "<b>Die Animation ist Theater. Was dahinter steht, nicht:</b> Ihre Datei hat diesen Browser-Tab nie verlassen. Es gibt keinen Server, keine Datenbank, kein Logfile. Der Text lag in einer Variablen im Arbeitsspeicher und ist jetzt überschrieben. Das ist der ganze Vorgang — und mehr, als die meisten Bewerbungsportale von sich behaupten können.",
       shredDoneLabel: "Weiter",
       shredWait: "Bitte warten",
-      shredReady: "Nichts verbleibt"
+      shredReady: "Nichts verbleibt",
+      inviteStamp: "Einladung",
+      inviteBetreff: function (role) { return "Ihre Bewerbung als " + role + " — Einladung"; },
+      inviteP1: "vielen Dank für Ihre Bewerbung und für Ihre Geduld. Wir haben Ihre Unterlagen mit Interesse gelesen und möchten Sie gerne kennenlernen.",
+      inviteP2: "Wir laden Sie zu einem ersten Gespräch ein. Die Rahmenbedingungen entnehmen Sie bitte dem Folgenden:",
+      inviteP3: "Bitte bestätigen Sie den Termin innerhalb von 24 Stunden. Wir freuen uns auf das Gespräch und melden uns im Anschluss zeitnah bei Ihnen.",
+      inviteNext: "Weiter bewerben",
+      inviteNextHint: "Verlassen Sie sich nicht darauf"
     },
     en: {
       portal: "Application portal · simulation",
@@ -1242,7 +1269,10 @@
       lblSent: "Applications",
       lblReplies: "Replies",
       lblGhosted: "Ghosted",
+      lblInvites: "Invitations",
       lblTime: "⌀ Reply time",
+      oddsNormal: function (r) { return "Reply rate in this mode: " + r + "%"; },
+      oddsReal: function (r) { return "Reply rate in this mode: " + r + "%. Good luck."; },
       pendingEyebrow: "Receipt of application · automatically generated",
       clockUnit: " sec.",
       letterCity: "Berlin,",
@@ -1254,7 +1284,7 @@
       p1: "thank you for your interest in our company and for the time you invested in your documents. We did in fact read your application.",
       p2: "We must inform you that we have decided against you. For reasons nobody would ever give you in real life, which we will now give you:",
       p3: "This decision is not a judgement of you, your qualifications or your career. It rarely ever is. We wish you all the best for your professional future — or, as you will read it three hundred more times this year: wir wünschen Ihnen für Ihren weiteren beruflichen Werdegang alles Gute.",
-      disclaimer: "Simulation. This company does not exist. Neither does this rejection. The feeling does.<br>Simulation. Dieses Unternehmen existiert nicht. Diese Absage auch nicht. Das Gefühl schon.",
+      disclaimer: "Simulation. This company does not exist. Neither does this letter. The feeling does.<br>Simulation. Dieses Unternehmen existiert nicht. Dieser Brief auch nicht. Das Gefühl schon.",
       next: "Keep applying",
       nextHint: "Not that it helps",
       ghostEyebrow: "Realism mode · 90 days at speed",
@@ -1339,7 +1369,14 @@
       shredTruth: "<b>The animation is theatre. What sits behind it is not:</b> your file never left this browser tab. There is no server, no database, no log file. The text sat in a variable in memory and has now been overwritten. That is the entire process — which is more than most application portals can claim.",
       shredDoneLabel: "Continue",
       shredWait: "Please wait",
-      shredReady: "Nothing remains"
+      shredReady: "Nothing remains",
+      inviteStamp: "Invitation",
+      inviteBetreff: function (role) { return "Your application for " + role + " — invitation"; },
+      inviteP1: "thank you for your application and for your patience. We read your documents with interest and would like to meet you.",
+      inviteP2: "We would like to invite you to a first conversation. The terms are as follows:",
+      inviteP3: "Please confirm within 24 hours. We look forward to speaking with you and will be back in touch promptly afterwards.",
+      inviteNext: "Keep applying",
+      inviteNextHint: "Do not rely on this one"
     }
   };
 
@@ -1521,31 +1558,66 @@
      "There was no reason. Sometimes there simply isn't one."]
   ];
 
-  var GHOST_BEATS = [
-    { day: ["Tag 1", "Day 1"],   de: "Eingangsbestätigung. Automatisch generiert. Keine Antwort auf diese Mail möglich.",
-                                 en: "Receipt of application. Automatically generated. Do not reply to this email." },
-    { day: ["Tag 3", "Day 3"],   de: "Status im Portal: „In Bearbeitung“.",
-                                 en: "Portal status: “In progress”." },
-    { day: ["Tag 9", "Day 9"],   de: "—", en: "—", quiet: true },
-    { day: ["Tag 16", "Day 16"], de: "Sie sehen im Portal nach. Status: „In Bearbeitung“.",
-                                 en: "You check the portal. Status: “In progress”." },
-    { day: ["Tag 24", "Day 24"], de: "—", en: "—", quiet: true },
-    { day: ["Tag 31", "Day 31"], de: "Sie schreiben eine höfliche Nachfrage zum Stand des Verfahrens.",
-                                 en: "You send a polite follow-up asking about the status." },
-    { day: ["Tag 32", "Day 32"], de: "—", en: "—", quiet: true },
-    { day: ["Tag 47", "Day 47"], de: "Die Stelle wird erneut ausgeschrieben. Wortgleich.",
-                                 en: "The role is posted again. Word for word." },
-    { day: ["Tag 58", "Day 58"], de: "Jemand aus dem Unternehmen sieht Ihr LinkedIn-Profil an. Dann nichts.",
-                                 en: "Someone from the company views your LinkedIn profile. Then nothing." },
-    { day: ["Tag 73", "Day 73"], de: "—", en: "—", quiet: true },
-    { day: ["Tag 90", "Day 90"], de: "Keine Antwort. Status weiterhin: „In Bearbeitung“.",
-                                 en: "No reply. Status still: “In progress”.", final: true }
+  /* The invitation is real. The conditions attached to it are the joke. */
+  var INVITE_TERMS = [
+    ["Termin: Dienstag, 14:00 Uhr. Das Gespräch findet auf Deutsch statt.",
+     "Tuesday, 14:00. The conversation will be held in German."],
+    ["Bitte bereiten Sie eine Fallstudie vor. Umfang ca. 8 Stunden, unvergütet.",
+     "Please prepare a case study. Around 8 hours, unpaid."],
+    ["Es handelt sich um das erste von fünf Gesprächen.",
+     "This is the first of five conversations."],
+    ["Bitte bringen Sie Ihre Gehaltsvorstellung mit. Unser Budget steht bereits fest.",
+     "Please bring your salary expectations. Our budget is already fixed."],
+    ["Wir melden uns im Anschluss innerhalb von zwei Wochen bei Ihnen.",
+     "We will get back to you within two weeks afterwards."],
+    ["Das Gespräch dauert 20 Minuten. Bitte planen Sie den ganzen Tag ein.",
+     "The conversation lasts 20 minutes. Please set aside the whole day."],
+    ["Bitte erscheinen Sie persönlich. Die Stelle ist remote.",
+     "Please attend in person. The role is remote."]
   ];
+
+  var GHOST_BEATS = [
+    { day: 1,  fixed: true,
+      de: "Eingangsbestätigung. Automatisch generiert. Keine Antwort auf diese Mail möglich.",
+      en: "Receipt of application. Automatically generated. Do not reply to this email." },
+    { day: 3,  de: "Status im Portal: \u201eIn Bearbeitung\u201c.",
+               en: "Portal status: \u201cIn progress\u201d." },
+    { day: 9,  de: "\u2014", en: "\u2014", quiet: true },
+    { day: 16, de: "Sie sehen im Portal nach. Status: \u201eIn Bearbeitung\u201c.",
+               en: "You check the portal. Status: \u201cIn progress\u201d." },
+    { day: 21, de: "Eine Absage von einer anderen Firma trifft ein. Immerhin.",
+               en: "A rejection from a different company arrives. At least it is something." },
+    { day: 24, de: "\u2014", en: "\u2014", quiet: true },
+    { day: 31, de: "Sie schreiben eine h\u00f6fliche Nachfrage zum Stand des Verfahrens.",
+               en: "You send a polite follow-up asking about the status." },
+    { day: 32, de: "\u2014", en: "\u2014", quiet: true },
+    { day: 39, de: "Ihre Nachfrage wird als gelesen markiert.",
+               en: "Your follow-up is marked as read." },
+    { day: 47, de: "Die Stelle wird erneut ausgeschrieben. Wortgleich.",
+               en: "The role is posted again. Word for word." },
+    { day: 58, de: "Jemand aus dem Unternehmen sieht Ihr LinkedIn-Profil an. Dann nichts.",
+               en: "Someone from the company views your LinkedIn profile. Then nothing." },
+    { day: 66, de: "Sie \u00fcberlegen, ob die Mail im Spam gelandet ist. Sie ist es nicht.",
+               en: "You wonder whether it went to spam. It did not." },
+    { day: 73, de: "\u2014", en: "\u2014", quiet: true },
+    { day: 81, de: "Das Bewerbungsportal meldet: Ihr Konto wird in 30 Tagen gel\u00f6scht.",
+               en: "The portal writes: your account will be deleted in 30 days." },
+    { day: 90, final: true,
+      de: "Keine Antwort. Status weiterhin: \u201eIn Bearbeitung\u201c.",
+      en: "No reply. Status still: \u201cIn progress\u201d." }
+  ];
+
+  /* Odds, not certainties. Being ignored at random is the actual experience;
+     a guaranteed outcome stops teaching that after two goes. */
+  var ODDS = {
+    normal:  { letter: 0.72, ghost: 0.24, invite: 0.04 },
+    realism: { letter: 0.11, ghost: 0.87, invite: 0.02 }
+  };
 
   var STORE_KEY = "neinbox.ledger.v3";
 
   var state = {
-    lang: "de", idx: 0, sent: 0, replies: 0, ghosted: 0,
+    lang: "de", idx: 0, sent: 0, replies: 0, ghosted: 0, invites: 0,
     totalMs: 0, truthShown: false, order: []
   };
 
@@ -1558,7 +1630,7 @@
    "ghostRole","ghostFirm","timeline","caseNo","truthHead","truthBody","truthGloss",
    "truthAgg","langDe","langEn","portalLabel","caseLabel","deckEyebrow","skipLabel",
    "skipHint","applyLabel","applyHint","modeTitle","modeDesc","lblSent","lblReplies",
-   "lblGhosted","lblTime","pendingEyebrow","letterCity","letterSpeedLabel","letterP0",
+   "lblGhosted","lblInvites","statInvites","lblTime","modeOdds","letterCard","pendingEyebrow","letterCity","letterSpeedLabel","letterP0",
    "letterP1","letterP2","letterP3","letterDisclaimer","nextLabel","nextHint",
    "ghostEyebrow","ghostNextLabel","ghostNextHint","truthEyebrow","restartLabel",
    "restartHint","colophon","btnCv","cvEntryLabel","cvEntryHint","screenCv","screenAnalysis","screenReport","screenShred","cvEyebrow","cvHead","cvLede","dropzone","dropBig","dropSmall","fileInput","pasteToggle","pasteArea","privacyNote","btnCvBack","cvBackLabel","cvBackHint","btnCvGo","cvGoLabel","cvGoHint","anEyebrow","anHead","anLede","steps","rpEyebrow","rpHead","rpScoreLabel","rpScore","rpReadout","rpRecLabel","rpRecs","rpNote","btnShred","shredLabel","shredHint","btnRecDeck","recDeckLabel","recDeckHint","shEyebrow","shHead","shLede","shredStage","shredDoc","shredDocTitle","shredDocBody","blades","shredDone","shredMark","shredMarkSub","shredTruth","btnShredDone","shredDoneLabel","shredDoneHint"].forEach(function (id) { el[id] = document.getElementById(id); });
@@ -1575,6 +1647,7 @@
       state.sent = v.sent || 0;
       state.replies = v.replies || 0;
       state.ghosted = v.ghosted || 0;
+      state.invites = v.invites || 0;
       state.totalMs = v.totalMs || 0;
       state.truthShown = !!v.truthShown;
       if (v.lang === "en" || v.lang === "de") state.lang = v.lang;
@@ -1584,7 +1657,8 @@
     try {
       localStorage.setItem(STORE_KEY, JSON.stringify({
         lang: state.lang, sent: state.sent, replies: state.replies,
-        ghosted: state.ghosted, totalMs: state.totalMs, truthShown: state.truthShown
+        ghosted: state.ghosted, invites: state.invites,
+        totalMs: state.totalMs, truthShown: state.truthShown
       }));
     } catch (e) { /* nothing to do */ }
   }
@@ -1646,20 +1720,24 @@
     el.lblSent.textContent = c.lblSent;
     el.lblReplies.textContent = c.lblReplies;
     el.lblGhosted.textContent = c.lblGhosted;
+    el.lblInvites.textContent = c.lblInvites;
     el.lblTime.textContent = c.lblTime;
+    renderOdds();
     el.pendingEyebrow.textContent = c.pendingEyebrow;
     el.clockUnit.textContent = c.clockUnit;
     el.letterCity.textContent = c.letterCity;
     el.letterSpeedLabel.textContent = c.speedLabel;
     el.letterP0.textContent = c.p0;
-    el.letterP1.textContent = c.p1;
-    el.letterP2.textContent = c.p2;
-    el.letterP3.textContent = c.p3;
+    if (!el.letterCard.classList.contains("invite")) {
+      el.letterP1.textContent = c.p1;
+      el.letterP2.textContent = c.p2;
+      el.letterP3.textContent = c.p3;
+      el.stampWord.textContent = c.stampWord;
+      el.nextLabel.textContent = c.next;
+      el.nextHint.textContent = c.nextHint;
+    }
     el.letterDisclaimer.innerHTML = c.disclaimer;
     el.sigDept.textContent = c.dept;
-    el.stampWord.textContent = c.stampWord;
-    el.nextLabel.textContent = c.next;
-    el.nextHint.textContent = c.nextHint;
     el.ghostEyebrow.textContent = c.ghostEyebrow;
     el.ghostNextLabel.textContent = c.ghostNext;
     el.ghostNextHint.textContent = el.btnGhostNext.disabled ? c.ghostWait : c.ghostDone;
@@ -1673,11 +1751,21 @@
     el.colophon.innerHTML = c.colophon;
   }
 
+  /* ---------- odds ---------- */
+  function renderOdds() {
+    var c = t();
+    var real = el.realismMode.checked;
+    var o = real ? ODDS.realism : ODDS.normal;
+    var rate = Math.round((o.letter + o.invite) * 100);
+    el.modeOdds.textContent = real ? c.oddsReal(rate) : c.oddsNormal(rate);
+  }
+
   /* ---------- ledger ---------- */
   function renderLedger() {
     el.statSent.textContent = state.sent;
     el.statReplies.textContent = state.replies;
     el.statGhosted.textContent = state.ghosted;
+    el.statInvites.textContent = state.invites;
     el.statTime.textContent = state.replies
       ? num(state.totalMs / state.replies / 1000) + " s"
       : "—";
@@ -1780,22 +1868,38 @@
         state.sent++;
         save();
         renderLedger();
-        if (el.realismMode.checked) startGhost(job); else startPending(job);
+        var outcome = drawOutcome();
+        if (outcome === "ghost") startGhost(job);
+        else startPending(job, outcome === "invite");
       } else {
         renderDeck();
       }
     }, 260);
   }
 
+  /* ---------- outcome ---------- */
+  function drawOutcome() {
+    var o = el.realismMode.checked ? ODDS.realism : ODDS.normal;
+    var r = Math.random();
+    if (r < o.letter) return "letter";
+    if (r < o.letter + o.ghost) return "ghost";
+    return "invite";
+  }
+
   /* ---------- pending ---------- */
-  function startPending(job) {
+  function startPending(job, isInvite) {
     el.pendingRole.textContent = jobText(job).role;
     el.pendingFirm.textContent = job.firm;
     el.clockVal.textContent = num(0);
     el.pendingBar.style.width = "0";
     show("screenPending");
 
-    var target = 2200 + Math.random() * 2600;
+    // Mostly a few seconds, occasionally so fast that nobody can have read it,
+    // occasionally long enough to start hoping.
+    var roll = Math.random();
+    var target = roll < 0.15 ? 700 + Math.random() * 500
+               : roll > 0.88 ? 6500 + Math.random() * 4000
+               : 1800 + Math.random() * 3200;
     var t0 = performance.now();
 
     function tick(now) {
@@ -1808,26 +1912,37 @@
       } else {
         state.replies++;
         state.totalMs += ms;
+        if (isInvite) state.invites++;
         save();
         renderLedger();
-        showLetter(job, ms);
+        showLetter(job, ms, isInvite);
       }
     }
     requestAnimationFrame(tick);
   }
 
   /* ---------- letter ---------- */
-  function showLetter(job, ms) {
+  function showLetter(job, ms, isInvite) {
     var now = new Date();
     var c = t();
-    var reason = pick(REASONS);
-    var primary = state.lang === "de" ? reason[0] : reason[1];
-    var gloss = state.lang === "de" ? reason[1] : reason[0];
+    var src = isInvite ? pick(INVITE_TERMS) : pick(REASONS);
+    var primary = state.lang === "de" ? src[0] : src[1];
+    var gloss = state.lang === "de" ? src[1] : src[0];
+
+    el.letterCard.classList.toggle("invite", !!isInvite);
+    el.letterP1.textContent = isInvite ? c.inviteP1 : c.p1;
+    el.letterP2.textContent = isInvite ? c.inviteP2 : c.p2;
+    el.letterP3.textContent = isInvite ? c.inviteP3 : c.p3;
+    el.stampWord.textContent = isInvite ? c.inviteStamp : c.stampWord;
+    el.nextLabel.textContent = isInvite ? c.inviteNext : c.next;
+    el.nextHint.textContent = isInvite ? c.inviteNextHint : c.nextHint;
 
     el.letterFrom.innerHTML = job.firm + "<br>" + c.dept;
     el.letterDate.textContent = longDate(now);
     el.letterSpeed.textContent = num(ms / 1000) + (state.lang === "de" ? " Sek." : " sec.");
-    el.letterBetreff.textContent = c.betreff(jobText(job).role);
+    el.letterBetreff.textContent = isInvite
+      ? c.inviteBetreff(jobText(job).role)
+      : c.betreff(jobText(job).role);
     el.reasonMain.textContent = primary;
     el.reasonGloss.textContent = gloss;
     el.sigName.textContent = job.sig;
@@ -1851,13 +1966,28 @@
     show("screenGhost");
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    GHOST_BEATS.forEach(function (beat, i) {
+    // A different path through the silence each time, so replaying it does
+    // not become a sequence you can recite.
+    var first = GHOST_BEATS[0];
+    var last = GHOST_BEATS[GHOST_BEATS.length - 1];
+    var middle = GHOST_BEATS.slice(1, -1);
+    var keep = [];
+    middle.forEach(function (bt) { if (Math.random() < 0.62) keep.push(bt); });
+    if (keep.length < 4) keep = middle.slice(0, 6);
+    var beats = [first].concat(keep, [last]).map(function (bt) {
+      var jitter = bt.fixed || bt.final ? 0 : Math.round((Math.random() * 6) - 3);
+      return { day: Math.max(2, bt.day + jitter), de: bt.de, en: bt.en,
+               quiet: bt.quiet, final: bt.final };
+    });
+
+    beats.forEach(function (beat, i) {
       ghostTimers.push(window.setTimeout(function () {
         var li = document.createElement("li");
         if (beat.quiet) li.className = "void";
         if (beat.final) li.className = "final";
         li.innerHTML = '<span class="tl-day">' +
-          beat.day[state.lang === "de" ? 0 : 1] + '</span>' + beat[state.lang];
+          (state.lang === "de" ? "Tag " : "Day ") + beat.day + '</span>' +
+          beat[state.lang];
         el.timeline.appendChild(li);
         if (beat.final) {
           state.ghosted++;
@@ -1866,7 +1996,7 @@
           el.btnGhostNext.disabled = false;
           el.ghostNextHint.textContent = t().ghostDone;
         }
-      }, i * 780));
+      }, i * 700));
     });
   }
 
@@ -2292,6 +2422,7 @@
     }
   });
 
+  el.realismMode.addEventListener("change", renderOdds);
   el.btnShred.addEventListener("click", runShredder);
   el.btnShredDone.addEventListener("click", function () {
     renderCvChrome();
