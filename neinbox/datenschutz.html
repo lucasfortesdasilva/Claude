@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Datenschutzerklärung — Neinbox</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400&family=Source+Serif+4:wght@400&display=swap">
+<style>
+  :root {
+    --ground: #E4E6E2; --paper: #FBFBF9; --paper-2: #F1F2EE;
+    --ink: #1A1C19; --ink-2: #5E635C; --ink-3: #8E948B;
+    --rule: #C7CBC2; --stamp: #A82420; --seal: #24527A;
+    --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --serif: "Source Serif 4", Georgia, serif;
+    --mono: "IBM Plex Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #131512; --paper: #1D201C; --paper-2: #262A24;
+      --ink: #E7E9E3; --ink-2: #A0A69B; --ink-3: #757B70;
+      --rule: #383D35; --stamp: #E0685C; --seal: #7BA6D4;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #131512; --paper: #1D201C; --paper-2: #262A24;
+    --ink: #E7E9E3; --ink-2: #A0A69B; --ink-3: #757B70;
+    --rule: #383D35; --stamp: #E0685C; --seal: #7BA6D4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .shell { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 0 48px; }
+  .masthead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule); padding-block: 16px 10px; margin-bottom: 28px;
+  }
+  .wordmark {
+    font-weight: 700; font-size: 17px; letter-spacing: .14em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 7px; color: var(--ink); text-decoration: none;
+  }
+  .wordmark::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--stamp); }
+  .masthead nav { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+  .masthead nav a { color: var(--ink-3); text-decoration: none; margin-left: 14px; }
+  .masthead nav a:hover, .masthead nav a[aria-current] { color: var(--ink); }
+  .paper { background: var(--paper); border: 1px solid var(--rule); padding: 26px 24px 22px; }
+  h1 { font-size: 26px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 4px; }
+  .sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+         text-transform: uppercase; color: var(--ink-3); margin: 0 0 24px; }
+  h2 { font-size: 15px; font-weight: 600; margin: 26px 0 8px; }
+  h2:first-of-type { margin-top: 0; }
+  h3 { font-size: 13px; font-weight: 600; margin: 18px 0 6px; color: var(--ink-2); }
+  p { margin: 0 0 12px; }
+  ul { margin: 0 0 12px; padding-left: 20px; }
+  li { margin-bottom: 5px; }
+  address { font-style: normal; font-family: var(--mono); font-size: 13px; line-height: 1.8; }
+  .fill { background: rgba(168,36,32,.10); border-bottom: 1px dashed var(--stamp);
+          color: var(--stamp); padding: 0 3px; font-weight: 500; }
+  .note {
+    border-left: 2px solid var(--seal); background: var(--paper-2);
+    padding: 13px 15px; font-family: var(--mono); font-size: 11.5px; line-height: 1.7;
+    color: var(--ink-2); margin: 0 0 24px;
+  }
+  .note b { color: var(--ink); font-weight: 500; }
+  .warn { border-left-color: var(--stamp); }
+  .warn b { color: var(--stamp); }
+  .good {
+    border-left: 2px solid var(--seal); background: rgba(36,82,122,.06);
+    padding: 14px 16px; margin: 0 0 16px;
+  }
+  .good p { margin: 0; font-family: var(--serif); font-size: 14.5px; line-height: 1.6; }
+  .pending {
+    display: inline-block; font-family: var(--mono); font-size: 9.5px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--stamp);
+    border: 1px solid var(--stamp); padding: 2px 6px; vertical-align: middle;
+    margin-left: 6px;
+  }
+  .en { margin-top: 34px; border-top: 1px solid var(--rule); padding-top: 22px; }
+  .paper-sub { font-family: var(--serif); font-style: italic; color: var(--ink-2);
+               font-size: 13.5px; margin: 0 0 18px; }
+  footer {
+    margin-top: 26px; font-family: var(--mono); font-size: 10px;
+    letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); line-height: 1.8;
+  }
+  footer a { color: var(--ink-2); }
+  a { color: var(--seal); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="masthead">
+    <a class="wordmark" href="./">Neinbox</a>
+    <nav>
+      <a href="./">Zur Seite</a>
+      <a href="./impressum.html">Impressum</a>
+      <a href="./datenschutz.html" aria-current="page">Datenschutz</a>
+    </nav>
+  </header>
+
+  <div class="note">
+    <b>ENTWURF — VOR VERÖFFENTLICHUNG AUSFÜLLEN UND PRÜFEN LASSEN.</b><br>
+    Rot markierte Felder ersetzen. Abschnitte mit dem Vermerk
+    <span class="pending">noch nicht aktiv</span> beschreiben Funktionen, die
+    derzeit abgeschaltet sind — diese Abschnitte erst aufnehmen, wenn die
+    jeweilige Funktion live ist, und sonst löschen. Eine Datenschutzerklärung,
+    die Verarbeitungen beschreibt, die gar nicht stattfinden, ist genauso
+    falsch wie eine, die welche verschweigt.
+  </div>
+
+  <main class="paper">
+    <h1>Datenschutzerklärung</h1>
+    <p class="sub">Informationen nach Art. 13 DSGVO</p>
+
+    <h2>1. Verantwortlicher</h2>
+    <address>
+      <span class="fill">[VORNAME NACHNAME]</span><br>
+      <span class="fill">[STRASSE UND HAUSNUMMER]</span><br>
+      <span class="fill">[PLZ] [ORT]</span>, Deutschland<br>
+      E-Mail: <span class="fill">[E-MAIL-ADRESSE]</span>
+    </address>
+
+    <h2>2. Der Grundsatz dieser Seite</h2>
+    <div class="good">
+      <p>
+        Diese Seite ist so gebaut, dass möglichst wenig Daten überhaupt
+        entstehen. Es werden keine Cookies gesetzt, es gibt keine
+        Nutzerkonten, kein Tracking über Seiten hinweg und keine Weitergabe
+        an Werbenetzwerke. Der wichtigste Punkt betrifft Ihren Lebenslauf —
+        siehe Abschnitt 4.
+      </p>
+    </div>
+
+    <h2>3. Aufruf der Seite (Server-Logfiles)</h2>
+    <p>
+      Die Seite wird bei <span class="fill">[HOSTER — DERZEIT: GitHub Pages,
+      GitHub Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, USA]</span>
+      gehostet. Beim Aufruf überträgt Ihr Browser technisch notwendige Daten an
+      den Server des Hosters, insbesondere:
+    </p>
+    <ul>
+      <li>IP-Adresse</li>
+      <li>Datum und Uhrzeit des Zugriffs</li>
+      <li>aufgerufene Datei, übertragene Datenmenge, HTTP-Statuscode</li>
+      <li>Browsertyp und Betriebssystem, ggf. Referrer-URL</li>
+    </ul>
+    <p>
+      Diese Verarbeitung ist zur Auslieferung der Seite technisch erforderlich.
+      Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am
+      sicheren und fehlerfreien Betrieb). Wir selbst haben keinen Zugriff auf
+      diese Logfiles und werten sie nicht aus.
+    </p>
+    <p>
+      <b>Drittlandübermittlung:</b> Der Hoster ist ein US-Unternehmen. Eine
+      Übermittlung in die USA findet statt. Grundlage ist der Angemessenheits-
+      beschluss der EU-Kommission zum EU-US Data Privacy Framework.
+      <span class="fill">[BEI UMZUG AUF EINEN EU-HOSTER DIESEN ABSATZ ERSETZEN]</span>
+    </p>
+
+    <h2>4. Ihr Lebenslauf wird nicht übertragen</h2>
+    <div class="good">
+      <p>
+        Wenn Sie die Lebenslauf-Funktion nutzen, wird Ihre Datei
+        <strong>nicht hochgeladen</strong>. Sie wird ausschließlich in Ihrem
+        Browser gelesen und ausgewertet. Es gibt keinen Server, der sie
+        entgegennehmen könnte, keine Datenbank und kein Logfile mit Ihren
+        Inhalten. Der ausgelesene Text liegt allein im Arbeitsspeicher Ihres
+        Browsers und wird spätestens beim Schließen des Tabs verworfen. Die
+        Schaltfläche „Unterlagen vernichten“ überschreibt ihn sofort.
+      </p>
+    </div>
+    <p>
+      Es findet insoweit keine Verarbeitung personenbezogener Daten durch uns
+      statt. Sie können das selbst überprüfen: Im Netzwerk-Tab Ihres Browsers
+      taucht Ihre Datei in keiner einzigen Anfrage auf.
+    </p>
+
+    <h2>5. Externe Programmbibliotheken</h2>
+    <p>
+      Zum Lesen von PDF- und DOCX-Dateien werden die Bibliotheken pdf.js und
+      JSZip benötigt. Diese werden vom Content Delivery Network
+      <b>cdnjs</b> (Cloudflare, Inc., USA) geladen. Dabei wird Ihre IP-Adresse
+      an Cloudflare übertragen. Der Abruf erfolgt erst, wenn Sie die
+      Lebenslauf-Funktion tatsächlich öffnen. Die Dateien selbst werden dorthin
+      nicht übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
+    </p>
+
+    <h2>6. Schriftarten</h2>
+    <div class="note warn">
+      <b>ACHTUNG — HIER BESTEHT HANDLUNGSBEDARF.</b><br>
+      Die Seite lädt Schriftarten derzeit von Google Fonts. Dabei wird die
+      IP-Adresse jedes Besuchers an Google in den USA übertragen. Genau dafür
+      wurden in Deutschland tausende Seitenbetreiber abgemahnt (LG München I,
+      20.01.2022, Az. 3 O 17493/20). Die Schriften sollten lokal eingebunden
+      werden; dann entfällt dieser Abschnitt ersatzlos.
+    </div>
+    <p>
+      Diese Seite bindet Schriftarten von <b>Google Fonts</b> (Google Ireland
+      Limited bzw. Google LLC, USA) ein. Beim Aufruf wird Ihre IP-Adresse an
+      Google übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
+      <span class="fill">[NACH LOKALER EINBINDUNG DER SCHRIFTEN DIESEN
+      ABSCHNITT VOLLSTÄNDIG LÖSCHEN]</span>
+    </p>
+
+    <h2>7. Lokale Speicherung im Browser</h2>
+    <p>
+      Wir setzen <b>keine Cookies</b>. Die Seite speichert lediglich im
+      lokalen Speicher Ihres Browsers (localStorage):
+    </p>
+    <ul>
+      <li>Ihre Sprachauswahl (Deutsch oder Englisch)</li>
+      <li>die Zählerstände des Simulators (Anzahl der Bewerbungen, Absagen usw.)</li>
+    </ul>
+    <p>
+      Diese Angaben verlassen Ihr Gerät nicht, sind für uns nicht einsehbar und
+      enthalten keine personenbezogenen Daten. Sie können sie jederzeit über die
+      Einstellungen Ihres Browsers löschen.
+    </p>
+
+    <h2>8. Reichweitenmessung <span class="pending">noch nicht aktiv</span></h2>
+    <p>
+      Zur Messung der Besucherzahlen wird
+      <span class="fill">[GoatCounter, betrieben von … / Plausible Analytics,
+      betrieben von …]</span> eingesetzt. Das Verfahren arbeitet
+      <b>ohne Cookies</b> und ohne geräteübergreifende Wiedererkennung. Es
+      werden keine personenbezogenen Profile gebildet. Erfasst werden
+      ausschließlich aggregierte Angaben wie aufgerufene Seite, Referrer,
+      grobe Herkunftsregion und Gerätetyp sowie die Namen einzelner
+      Bedienschritte (z. B. „story-submitted“) — nie deren Inhalte.
+      Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
+    </p>
+    <p>
+      Sendet Ihr Browser ein „Do Not Track“- oder „Global Privacy
+      Control“-Signal, wird die Messung vollständig unterlassen.
+    </p>
+
+    <h2>9. Erfahrungsberichte (Formular NB-01) <span class="pending">noch nicht aktiv</span></h2>
+    <p>
+      Wenn Sie uns freiwillig einen Erfahrungsbericht senden, verarbeiten wir
+      die von Ihnen eingegebenen Angaben: Stadt, Branche, Wartedauer, ob Sie
+      eine Antwort erhalten haben, Sprache der Stellenanzeige, Anzahl Ihrer
+      Bewerbungen sowie Ihren Freitext. Eine E-Mail-Adresse wird nur erhoben,
+      wenn Sie eines der entsprechenden Kästchen ankreuzen.
+    </p>
+    <p>
+      <b>Rechtsgrundlage</b> ist ausschließlich Ihre Einwilligung nach Art. 6
+      Abs. 1 lit. a DSGVO. Jedes Kästchen ist eine eigene, getrennte
+      Einwilligung:
+    </p>
+    <ul>
+      <li>
+        <b>Anonyme Veröffentlichung</b> — Ihr Bericht darf in Auswertungen,
+        Presseberichten oder einer Buchveröffentlichung erscheinen, ohne Ihren
+        Namen und ohne Ihre E-Mail-Adresse. Namen von Personen und Unternehmen
+        werden vor einer Veröffentlichung entfernt.
+      </li>
+      <li>
+        <b>Kontaktaufnahme</b> — wir dürfen uns zu genau diesem Bericht bei
+        Ihnen melden.
+      </li>
+      <li>
+        <b>Auf dem Laufenden bleiben</b> — wir dürfen Ihnen gelegentlich
+        schreiben, wenn aus dem Projekt etwas wird.
+      </li>
+    </ul>
+    <p>
+      Ohne Häkchen geschieht nichts davon. Sie können Ihre Einwilligung
+      jederzeit für die Zukunft widerrufen, formlos per E-Mail an die oben
+      genannte Adresse. Die Rechtmäßigkeit der bis zum Widerruf erfolgten
+      Verarbeitung bleibt davon unberührt.
+    </p>
+    <p>
+      <b>Empfänger:</b> Die Daten werden bei
+      <span class="fill">[Supabase — Serverstandort EU (Frankfurt am Main),
+      Auftragsverarbeiter …]</span> gespeichert. Es besteht ein Vertrag zur
+      Auftragsverarbeitung nach Art. 28 DSGVO.
+    </p>
+    <p>
+      <b>Speicherdauer:</b> Berichte werden gespeichert, bis Sie deren Löschung
+      verlangen oder der Zweck entfällt. E-Mail-Adressen werden gelöscht, sobald
+      Sie Ihre Einwilligung widerrufen.
+      <span class="fill">[GGF. KONKRETE FRIST ERGÄNZEN]</span>
+    </p>
+
+    <h2>10. Ihre Rechte</h2>
+    <p>Sie haben jederzeit das Recht auf:</p>
+    <ul>
+      <li>Auskunft über die zu Ihnen gespeicherten Daten (Art. 15 DSGVO)</li>
+      <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
+      <li>Löschung (Art. 17 DSGVO)</li>
+      <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+      <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+      <li>Widerspruch gegen Verarbeitungen auf Grundlage berechtigter Interessen (Art. 21 DSGVO)</li>
+      <li>Widerruf erteilter Einwilligungen mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO)</li>
+    </ul>
+    <p>
+      Wenden Sie sich dafür formlos an die oben genannte E-Mail-Adresse.
+    </p>
+
+    <h2>11. Beschwerderecht</h2>
+    <p>
+      Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu
+      beschweren, insbesondere in dem Mitgliedstaat Ihres Aufenthaltsorts.
+      Zuständig für uns ist:
+    </p>
+    <address>
+      <span class="fill">[Berliner Beauftragte für Datenschutz und
+      Informationsfreiheit — BEI ANDEREM SITZ ANPASSEN]</span>
+    </address>
+
+    <h2>12. Änderungen dieser Erklärung</h2>
+    <p>
+      Wir passen diese Erklärung an, sobald sich die Funktionen der Seite
+      ändern. Es gilt die jeweils hier veröffentlichte Fassung.
+    </p>
+  </main>
+
+  <section class="en paper">
+    <h1>Privacy policy</h1>
+    <p class="paper-sub">
+      Convenience translation. The German version above is the legally binding one.
+    </p>
+
+    <h2>The principle</h2>
+    <div class="good">
+      <p>
+        This site is built so that as little data as possible comes into
+        existence. No cookies, no accounts, no cross-site tracking, nothing
+        passed to advertising networks.
+      </p>
+    </div>
+
+    <h2>Your CV is never transmitted</h2>
+    <div class="good">
+      <p>
+        If you use the CV feature, your file is <strong>not uploaded</strong>.
+        It is read and analysed entirely inside your browser. There is no server
+        that could receive it, no database and no log file containing its
+        contents. The extracted text exists only in your browser's memory and is
+        discarded at the latest when you close the tab; the “shred documents”
+        button overwrites it immediately. You can verify this yourself: your file
+        appears in none of the requests in your browser's network tab.
+      </p>
+    </div>
+
+    <h2>Site delivery</h2>
+    <p>
+      The site is hosted by <span class="fill">[HOST — currently GitHub Pages,
+      GitHub Inc., USA]</span>. Serving a page necessarily transmits your IP
+      address, timestamp, requested file, browser type and possibly a referrer
+      to the host. Legal basis: Art. 6 (1) (f) GDPR. We have no access to these
+      logs. As the host is a US company, a transfer to the USA takes place on
+      the basis of the EU-US Data Privacy Framework adequacy decision.
+    </p>
+
+    <h2>Fonts and libraries</h2>
+    <p>
+      Fonts are currently loaded from Google Fonts, and the pdf.js and JSZip
+      libraries from cdnjs (Cloudflare). Both transmit your IP address to those
+      providers. The libraries load only if you open the CV feature.
+    </p>
+
+    <h2>Local storage</h2>
+    <p>
+      No cookies are set. Your language choice and the simulator's counters are
+      kept in your browser's local storage. They never leave your device and we
+      cannot see them.
+    </p>
+
+    <h2>Analytics <span class="pending">not yet active</span></h2>
+    <p>
+      Visitor numbers are measured without cookies and without cross-device
+      recognition. No personal profiles are built. Only aggregate figures and
+      the names of interface steps are recorded — never their contents. If your
+      browser sends Do Not Track or Global Privacy Control, no measurement takes
+      place at all.
+    </p>
+
+    <h2>Experience reports <span class="pending">not yet active</span></h2>
+    <p>
+      If you voluntarily send us a report we process what you entered. An email
+      address is collected only if you tick one of the relevant boxes. The legal
+      basis is solely your consent (Art. 6 (1) (a) GDPR), and each box is a
+      separate consent: anonymous publication, contact about this report, and
+      occasional updates. Without a tick, none of it happens. You may withdraw
+      consent at any time with effect for the future by emailing the address in
+      the legal notice.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      Access, rectification, erasure, restriction, portability, objection, and
+      withdrawal of consent — Art. 15 to 21 and Art. 7 (3) GDPR. You also have
+      the right to complain to a supervisory authority in the member state where
+      you live.
+    </p>
+  </section>
+
+  <footer>
+    Neinbox · <a href="./">Zur Seite</a> · <a href="./impressum.html">Impressum</a><br>
+    Stand: <span class="fill">[DATUM EINSETZEN]</span>
+  </footer>
+</div>
+</body>
+</html>

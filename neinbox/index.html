@@ -1019,7 +1019,8 @@
     color: var(--ink-3);
     text-transform: uppercase;
   }
-  .colophon a { color: var(--ink-2); }
+  .colophon a { color: var(--ink-2); text-underline-offset: 2px; }
+  .colophon a:hover { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -1434,6 +1435,7 @@
       truthAgg: "In Deutschland schweigen Arbeitgeber nicht aus Faulheit. Eine begründete Absage ist nach dem AGG ein potenzielles Beweismittel — Schweigen ist die juristisch sichere Variante. Das Problem ist gebaut. Man kann es also auch anders bauen.",
       restart: "Von vorn anfangen",
       restartHint: "Wie im echten Leben",
+      legalLinks: "<a href=\"./impressum.html\">Impressum</a> · <a href=\"./datenschutz.html\">Datenschutzerklärung</a>",
       colophonAnalytics: "Besuche werden ohne Cookies und ohne personenbezogene Daten gezählt. Ihr Lebenslauf ist davon nicht berührt.",
       colophon: "Neinbox · Ein Bewerbungssimulator. Alle Unternehmen, Personen und Absagen sind frei erfunden.<br>Jede Ähnlichkeit mit Ihrem Posteingang ist beabsichtigt.",
       specs: { place: "Ort", pay: "Gehalt", exp: "Erfahrung", lang: "Sprache" },
@@ -1597,6 +1599,7 @@
       truthAgg: "German employers don't stay silent out of laziness. Under the AGG — the General Equal Treatment Act — a stated reason for rejection is potential evidence in a discrimination claim, and applicants have two months to file. Silence is the legally safe option. The problem is built. Which means it can be built differently.",
       restart: "Start over",
       restartHint: "Just like real life",
+      legalLinks: "<a href=\"./impressum.html\">Impressum</a> · <a href=\"./datenschutz.html\">Privacy policy</a>",
       colophonAnalytics: "Visits are counted without cookies and without personal data. Your CV is not part of it.",
       colophon: "Neinbox · A job application simulator. All companies, people and rejections are fictional.<br>Any resemblance to your actual inbox is entirely intended.",
       specs: { place: "Location", pay: "Salary", exp: "Experience", lang: "Language" },
@@ -2087,7 +2090,8 @@
     el.restartLabel.textContent = c.restart;
     el.restartHint.textContent = c.restartHint;
     el.colophon.innerHTML = c.colophon +
-      (analyticsOn ? "<br>" + c.colophonAnalytics : "");
+      (analyticsOn ? "<br>" + c.colophonAnalytics : "") +
+      "<br>" + c.legalLinks;
   }
 
   /* ---------- odds ---------- */

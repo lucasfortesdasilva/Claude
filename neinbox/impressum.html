@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Impressum — Neinbox</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400&family=Source+Serif+4:wght@400&display=swap">
+<style>
+  :root {
+    --ground: #E4E6E2; --paper: #FBFBF9; --paper-2: #F1F2EE;
+    --ink: #1A1C19; --ink-2: #5E635C; --ink-3: #8E948B;
+    --rule: #C7CBC2; --stamp: #A82420; --seal: #24527A;
+    --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --serif: "Source Serif 4", Georgia, serif;
+    --mono: "IBM Plex Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #131512; --paper: #1D201C; --paper-2: #262A24;
+      --ink: #E7E9E3; --ink-2: #A0A69B; --ink-3: #757B70;
+      --rule: #383D35; --stamp: #E0685C; --seal: #7BA6D4;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #131512; --paper: #1D201C; --paper-2: #262A24;
+    --ink: #E7E9E3; --ink-2: #A0A69B; --ink-3: #757B70;
+    --rule: #383D35; --stamp: #E0685C; --seal: #7BA6D4;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: auto; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .shell { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 0 48px; }
+  .masthead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule); padding-block: 16px 10px; margin-bottom: 28px;
+  }
+  .wordmark {
+    font-weight: 700; font-size: 17px; letter-spacing: .14em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 7px; color: var(--ink);
+    text-decoration: none;
+  }
+  .wordmark::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--stamp); }
+  .masthead nav { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+  .masthead nav a { color: var(--ink-3); text-decoration: none; margin-left: 14px; }
+  .masthead nav a:hover, .masthead nav a[aria-current] { color: var(--ink); }
+  .paper { background: var(--paper); border: 1px solid var(--rule); padding: 26px 24px 22px; }
+  h1 { font-size: 26px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 4px; }
+  .sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+         text-transform: uppercase; color: var(--ink-3); margin: 0 0 24px; }
+  h2 { font-size: 15px; font-weight: 600; margin: 26px 0 8px; }
+  h2:first-of-type { margin-top: 0; }
+  p { margin: 0 0 12px; }
+  address { font-style: normal; font-family: var(--mono); font-size: 13px; line-height: 1.8; }
+  .fill {
+    background: rgba(168,36,32,.10); border-bottom: 1px dashed var(--stamp);
+    color: var(--stamp); padding: 0 3px; font-weight: 500;
+  }
+  .note {
+    border-left: 2px solid var(--seal); background: var(--paper-2);
+    padding: 13px 15px; font-family: var(--mono); font-size: 11.5px; line-height: 1.7;
+    color: var(--ink-2); margin: 0 0 24px;
+  }
+  .note b { color: var(--ink); font-weight: 500; }
+  .en { margin-top: 34px; border-top: 1px solid var(--rule); padding-top: 22px; }
+  .en .paper-sub { font-family: var(--serif); font-style: italic; color: var(--ink-2);
+                   font-size: 13.5px; margin: 0 0 18px; }
+  footer {
+    margin-top: 26px; font-family: var(--mono); font-size: 10px;
+    letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); line-height: 1.8;
+  }
+  footer a { color: var(--ink-2); }
+  a { color: var(--seal); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="masthead">
+    <a class="wordmark" href="./">Neinbox</a>
+    <nav>
+      <a href="./">Zur Seite</a>
+      <a href="./impressum.html" aria-current="page">Impressum</a>
+      <a href="./datenschutz.html">Datenschutz</a>
+    </nav>
+  </header>
+
+  <div class="note">
+    <b>ENTWURF — VOR VERÖFFENTLICHUNG AUSFÜLLEN UND PRÜFEN LASSEN.</b><br>
+    Alle rot markierten Felder müssen ersetzt werden. Ein fehlerhaftes oder
+    fehlendes Impressum ist in Deutschland abmahnfähig (§ 3a UWG i. V. m.
+    § 5 DDG). Lassen Sie diesen Text vor dem Livegang anwaltlich prüfen.
+  </div>
+
+  <main class="paper">
+    <h1>Impressum</h1>
+    <p class="sub">Angaben gemäß § 5 DDG</p>
+
+    <h2>Diensteanbieter</h2>
+    <address>
+      <span class="fill">[VORNAME NACHNAME]</span><br>
+      <span class="fill">[STRASSE UND HAUSNUMMER]</span><br>
+      <span class="fill">[PLZ] [ORT]</span><br>
+      Deutschland
+    </address>
+
+    <h2>Kontakt</h2>
+    <address>
+      E-Mail: <span class="fill">[E-MAIL-ADRESSE]</span><br>
+      Telefon: <span class="fill">[TELEFONNUMMER]</span>
+    </address>
+
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <address>
+      <span class="fill">[VORNAME NACHNAME]</span><br>
+      <span class="fill">[ANSCHRIFT WIE OBEN]</span>
+    </address>
+
+    <h2>Umsatzsteuer-Identifikationsnummer</h2>
+    <p><span class="fill">[NUR FALLS VORHANDEN — SONST DIESEN ABSCHNITT LÖSCHEN]</span></p>
+
+    <h2>Art des Angebots</h2>
+    <p>
+      Neinbox ist ein satirisches, nicht kommerzielles Projekt. Es werden keine
+      Waren oder Dienstleistungen angeboten, es findet kein Vertragsschluss statt
+      und es wird keine Vergütung erhoben. Sämtliche auf der Seite dargestellten
+      Unternehmen, Personen, Stellenanzeigen und Absagen sind frei erfunden.
+      Jede Ähnlichkeit mit tatsächlichen Unternehmen oder Personen ist nicht
+      beabsichtigt.
+    </p>
+
+    <h2>Haftung für Inhalte</h2>
+    <p>
+      Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf
+      diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis
+      10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte
+      oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu
+      forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen
+      zur Entfernung oder Sperrung der Nutzung von Informationen nach den
+      allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung
+      ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten
+      Rechtsverletzung möglich. Bei Bekanntwerden entsprechender Rechtsverletzungen
+      werden wir diese Inhalte umgehend entfernen.
+    </p>
+
+    <h2>Haftung für Links</h2>
+    <p>
+      Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte
+      wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch
+      keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der
+      jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Bei Bekanntwerden
+      von Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+    </p>
+
+    <h2>Urheberrecht</h2>
+    <p>
+      Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten
+      unterliegen dem deutschen Urheberrecht. Beiträge Dritter werden nur mit
+      ausdrücklicher Einwilligung und ausschließlich anonymisiert veröffentlicht.
+    </p>
+
+    <h2>Verbraucherstreitbeilegung</h2>
+    <p>
+      Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren
+      vor einer Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG).
+    </p>
+  </main>
+
+  <section class="en paper">
+    <h1>Legal notice</h1>
+    <p class="paper-sub">
+      Convenience translation. The German version above is the legally binding one.
+    </p>
+
+    <h2>Service provider</h2>
+    <address>
+      <span class="fill">[FIRST NAME LAST NAME]</span><br>
+      <span class="fill">[STREET AND NUMBER]</span><br>
+      <span class="fill">[POSTCODE] [CITY]</span><br>
+      Germany
+    </address>
+
+    <h2>Contact</h2>
+    <address>
+      Email: <span class="fill">[EMAIL ADDRESS]</span><br>
+      Phone: <span class="fill">[PHONE NUMBER]</span>
+    </address>
+
+    <h2>Nature of this service</h2>
+    <p>
+      Neinbox is a satirical, non-commercial project. Nothing is sold, no contract
+      is concluded and no payment is taken. Every company, person, job advert and
+      rejection shown on the site is fictional. Any resemblance to actual companies
+      or people is unintended.
+    </p>
+
+    <h2>Liability</h2>
+    <p>
+      We are responsible for our own content under general law (§ 7 (1) DDG). Under
+      §§ 8–10 DDG we are not obliged to monitor third-party information transmitted
+      or stored here, nor to investigate circumstances indicating unlawful activity.
+      Obligations to remove or block the use of information under general law remain
+      unaffected. Liability in this respect arises only from the point at which we
+      become aware of a specific infringement. We will remove such content promptly
+      upon becoming aware of it.
+    </p>
+
+    <h2>Consumer dispute resolution</h2>
+    <p>
+      We are neither willing nor obliged to participate in dispute resolution
+      proceedings before a consumer arbitration board (§ 36 VSBG).
+    </p>
+  </section>
+
+  <footer>
+    Neinbox · <a href="./">Zur Seite</a> · <a href="./datenschutz.html">Datenschutzerklärung</a><br>
+    Stand: <span class="fill">[DATUM EINSETZEN]</span>
+  </footer>
+</div>
+</body>
+</html>
