@@ -121,6 +121,69 @@ You should get an empty array, not your data.
 
 ---
 
+## Analytics
+
+Off until configured. Edit the `ANALYTICS` block near the top of the `<script>`:
+
+```js
+var ANALYTICS = {
+  provider: "goatcounter",   // was "none"; or "plausible"
+  site: "neinbox",           // goatcounter: your code -> neinbox.goatcounter.com
+                             // plausible:   your domain, e.g. "neinbox.de"
+  respectDNT: true
+};
+```
+
+Both options are EU-hosted, cookieless, and collect no personal data, so **no
+cookie banner is required**. That matters on this site more than most: greeting
+people with a consent modal would contradict everything the page says about not
+taking their data. Do not swap in Google Analytics — it needs a banner, and
+several German data protection authorities have ruled against its use.
+
+- **GoatCounter** — free for personal use, open source, self-hostable.
+  Sign up, pick a code, put the code in `site`.
+- **Plausible** — paid, more polished dashboard. Put your domain in `site`.
+
+`respectDNT: true` skips loading entirely when the browser sends Do Not Track
+or Global Privacy Control. It costs you a few percent of visits and is
+consistent with the rest of the site. Set it to `false` if you would rather
+have the numbers.
+
+### Events
+
+Seven funnel steps are tracked by name:
+
+| Event | Fires when |
+| --- | --- |
+| `cv-opened` | the CV screen is opened |
+| `cv-parsed` | a CV is successfully read |
+| `cv-shredded` | the shredder is run |
+| `application-sent` | an application is swiped or clicked through |
+| `truth-reached` | the fourth-wall card is shown |
+| `story-opened` | the story form is opened |
+| `story-submitted` | a story is actually sent |
+
+That gives you the only funnel that matters: arrivals → applications → story
+form opened → story submitted.
+
+**Events carry a name and nothing else.** No CV text, no story text, no form
+values, no identifiers. Keep it that way — the question is how many people
+reached a step, never who they were or what they wrote.
+
+### Where it runs
+
+Analytics runs wherever the file is actually served — which today means the
+GitHub Pages deployment. There is no separate staging site: the Pages URL is
+both the test version and the live one, so your own testing will show up in
+the numbers. At current volume that is noise you can ignore; once real traffic
+arrives, both providers offer a way to exclude your own visits.
+
+It does **not** run in a Claude artifact preview. Artifacts block outbound
+requests, so the script never loads — which is the behaviour you want anyway,
+since preview traffic would only pollute the stats.
+
+---
+
 ## What the form collects
 
 Structured fields first, because a pile of prose is not a dataset:

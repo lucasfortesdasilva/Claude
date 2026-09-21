@@ -1434,6 +1434,7 @@
       truthAgg: "In Deutschland schweigen Arbeitgeber nicht aus Faulheit. Eine begründete Absage ist nach dem AGG ein potenzielles Beweismittel — Schweigen ist die juristisch sichere Variante. Das Problem ist gebaut. Man kann es also auch anders bauen.",
       restart: "Von vorn anfangen",
       restartHint: "Wie im echten Leben",
+      colophonAnalytics: "Besuche werden ohne Cookies und ohne personenbezogene Daten gezählt. Ihr Lebenslauf ist davon nicht berührt.",
       colophon: "Neinbox · Ein Bewerbungssimulator. Alle Unternehmen, Personen und Absagen sind frei erfunden.<br>Jede Ähnlichkeit mit Ihrem Posteingang ist beabsichtigt.",
       specs: { place: "Ort", pay: "Gehalt", exp: "Erfahrung", lang: "Sprache" },
       appsWord: "Bewerbungen",
@@ -1448,7 +1449,7 @@
       dropSmall: "PDF · DOCX · TXT · max. 10 MB",
       pasteToggle: "Oder Text direkt einfügen",
       pastePlaceholder: "Lebenslauf hier einfügen …",
-      privacy: "<b>Ihre Datei wird nicht hochgeladen.</b> Sie wird in diesem Browserfenster gelesen und nirgendwohin gesendet — nachprüfbar im Netzwerk-Tab Ihres Browsers. Nichts wird gespeichert. Schließen Sie den Tab, und die Daten sind weg.",
+      privacy: "<b>Ihre Datei wird nicht hochgeladen.</b> Sie wird in diesem Browserfenster gelesen und nirgendwohin gesendet — prüfen Sie den Netzwerk-Tab Ihres Browsers: in keiner einzigen Anfrage steht Ihre Datei. Nichts wird gespeichert. Schließen Sie den Tab, und die Daten sind weg.",
       cvBack: "Zurück",
       cvBackHint: "Ohne Lebenslauf fortfahren",
       cvGo: "Auswerten",
@@ -1596,6 +1597,7 @@
       truthAgg: "German employers don't stay silent out of laziness. Under the AGG — the General Equal Treatment Act — a stated reason for rejection is potential evidence in a discrimination claim, and applicants have two months to file. Silence is the legally safe option. The problem is built. Which means it can be built differently.",
       restart: "Start over",
       restartHint: "Just like real life",
+      colophonAnalytics: "Visits are counted without cookies and without personal data. Your CV is not part of it.",
       colophon: "Neinbox · A job application simulator. All companies, people and rejections are fictional.<br>Any resemblance to your actual inbox is entirely intended.",
       specs: { place: "Location", pay: "Salary", exp: "Experience", lang: "Language" },
       appsWord: "applicants",
@@ -1610,7 +1612,7 @@
       dropSmall: "PDF · DOCX · TXT · max. 10 MB",
       pasteToggle: "Or paste the text instead",
       pastePlaceholder: "Paste your CV here …",
-      privacy: "<b>Your file is not uploaded.</b> It is read inside this browser tab and sent nowhere — check your browser's network tab if you like. Nothing is stored. Close the tab and it is gone.",
+      privacy: "<b>Your file is not uploaded.</b> It is read inside this browser tab and sent nowhere — check your browser's network tab: your file is in none of the requests. Nothing is stored. Close the tab and it is gone.",
       cvBack: "Back",
       cvBackHint: "Continue without a CV",
       cvGo: "Analyse",
@@ -2084,7 +2086,8 @@
     el.truthHead.textContent = c.truthHead(state.replies + state.ghosted);
     el.restartLabel.textContent = c.restart;
     el.restartHint.textContent = c.restartHint;
-    el.colophon.innerHTML = c.colophon;
+    el.colophon.innerHTML = c.colophon +
+      (analyticsOn ? "<br>" + c.colophonAnalytics : "");
   }
 
   /* ---------- odds ---------- */
@@ -2204,6 +2207,7 @@
         state.sent++;
         save();
         renderLedger();
+        track("application-sent");
         var outcome = drawOutcome();
         if (outcome === "ghost") startGhost(job);
         else startPending(job, outcome === "invite");
@@ -2341,6 +2345,7 @@
     if (state.truthShown || state.sent < 7) return false;
     state.truthShown = true;
     save();
+    track("truth-reached");
     el.truthHead.textContent = t().truthHead(state.replies + state.ghosted);
     show("screenTruth");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2538,6 +2543,7 @@
     if (clean.length < 40) { cvError(t().cvErrEmpty); return; }
     cvText = clean;
     cvName = label || cvName || "CV";
+    track("cv-parsed");
     el.dropzone.classList.remove("err");
     el.btnCvGo.disabled = false;
     el.cvGoHint.textContent = cvName;
@@ -2627,6 +2633,7 @@
     show("screenShred");
     window.scrollTo({ top: 0, behavior: "smooth" });
 
+    track("cv-shredded");
     window.setTimeout(function () {
       var w = el.shredStage.clientWidth;
       var stripW = w / STRIPS;
@@ -2688,6 +2695,78 @@
     if (cvProfile) renderReport();
   }
 
+
+
+  /* =======================================================================
+     Analytics.
+
+     Cookieless by design: no cookies, no identifiers, no personal data, so
+     no consent banner is needed. A banner on a site about not taking
+     people's data would say the wrong thing.
+
+     Nothing here ever sees CV text, story text, or form values. Events are
+     bare names marking a step in the funnel and nothing else. Keep it that
+     way — the point of the funnel is how many people reached a step, never
+     who or what they wrote.
+
+     Off until configured. Set provider and site below.
+     ======================================================================= */
+  var ANALYTICS = {
+    // "none" | "goatcounter" | "plausible"
+    provider: "none",
+    // goatcounter: your code, e.g. "neinbox"  (-> neinbox.goatcounter.com)
+    // plausible:   your domain, e.g. "neinbox.de"
+    site: "",
+    // Honour the browser's Do Not Track signal. On-brand, and costs you
+    // the few percent of visitors who asked not to be counted.
+    respectDNT: true
+  };
+
+  function dntEnabled() {
+    try {
+      return navigator.doNotTrack === "1" ||
+             window.doNotTrack === "1" ||
+             navigator.msDoNotTrack === "1" ||
+             navigator.globalPrivacyControl === true;
+    } catch (e) { return false; }
+  }
+
+  var analyticsOn = false;
+
+  function initAnalytics() {
+    if (ANALYTICS.provider === "none" || !ANALYTICS.site) return;
+    if (ANALYTICS.respectDNT && dntEnabled()) return;
+
+    var s = document.createElement("script");
+    s.defer = true;
+    if (ANALYTICS.provider === "goatcounter") {
+      s.src = "https://gc.zgo.at/count.js";
+      s.setAttribute("data-goatcounter",
+        "https://" + ANALYTICS.site + ".goatcounter.com/count");
+    } else if (ANALYTICS.provider === "plausible") {
+      s.src = "https://plausible.io/js/script.js";
+      s.setAttribute("data-domain", ANALYTICS.site);
+    } else {
+      return;
+    }
+    // A blocked or failed script must never break the page.
+    s.onerror = function () { analyticsOn = false; };
+    document.head.appendChild(s);
+    analyticsOn = true;
+  }
+
+  /* Marks one step of the funnel. Name only — never content. */
+  function track(name) {
+    if (!analyticsOn) return;
+    try {
+      if (ANALYTICS.provider === "plausible" && typeof window.plausible === "function") {
+        window.plausible(name);
+      } else if (ANALYTICS.provider === "goatcounter" &&
+                 window.goatcounter && typeof window.goatcounter.count === "function") {
+        window.goatcounter.count({ path: name, title: name, event: true });
+      }
+    } catch (e) { /* analytics must never interrupt the user */ }
+  }
 
   /* =======================================================================
      Story collection.
@@ -2918,6 +2997,7 @@
     el.stSendHint.textContent = c.stSending;
 
     sendStory(buildPayload()).then(function (r) {
+      track("story-submitted");
       el.thDemo.hidden = !r.demo;
       show("screenThanks");
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2948,6 +3028,7 @@
   });
 
   el.btnCv.addEventListener("click", function () {
+    track("cv-opened");
     renderCvChrome();
     show("screenCv");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3004,6 +3085,7 @@
   });
 
   function openStory() {
+    track("story-opened");
     renderStoryChrome();
     show("screenStory");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3042,6 +3124,7 @@
 
   /* ---------- boot ---------- */
   load();
+  initAnalytics();
   if (!localStorageHasLang() && navigatorPrefersEnglish()) state.lang = "en";
   state.order = shuffled(JOBS.length);
   el.caseNo.textContent = "2026-BE-" +
