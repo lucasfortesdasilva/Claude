@@ -121,6 +121,45 @@ You should get an empty array, not your data.
 
 ---
 
+## No third-party requests
+
+The site fetches nothing from anyone else. Fonts, pdf.js and JSZip are all
+served from this repository:
+
+```
+neinbox/fonts/    10 woff2 files, 196 KB total
+                  (~102 KB on a typical German visit — latin-ext loads on demand)
+neinbox/vendor/   pdf.js 3.11.174, its worker, and JSZip 3.10.1, plus licences
+```
+
+This is a legal position, not a performance one. Embedding Google Fonts by URL
+transmits every visitor's IP address to Google in the USA, which is exactly
+what produced the German Abmahnung wave following **LG München I, 20.01.2022,
+Az. 3 O 17493/20** — €100 damages in the original case, then thousands of
+letters demanding €100–500. Serving the files yourself removes the transfer,
+and with it that section of the privacy policy.
+
+To re-fetch or bump a version, run `./vendor.sh` from the `neinbox/` directory.
+The files are committed, so you should not normally need to — the script exists
+so the provenance of every binary here is reproducible.
+
+**Licences:** pdf.js is Apache-2.0, JSZip is MIT/GPLv3 dual-licensed. Both
+texts are kept in `vendor/`, as redistribution requires. Fonts are OFL 1.1.
+
+### Verifying it
+
+Serve the directory and block everything else:
+
+```bash
+cd neinbox && python3 -m http.server 8000
+```
+
+Open it with your browser's network tab visible. Every request should be to
+localhost. The only external hosts that may ever appear are the analytics
+provider — and only once you have configured one.
+
+---
+
 ## Analytics
 
 Off until configured. Edit the `ANALYTICS` block near the top of the `<script>`:
@@ -135,7 +174,8 @@ var ANALYTICS = {
 ```
 
 Both options are EU-hosted, cookieless, and collect no personal data, so **no
-cookie banner is required**. That matters on this site more than most: greeting
+cookie banner is required**. Once configured, the analytics provider is the
+only external host the site contacts at all. That matters on this site more than most: greeting
 people with a consent modal would contradict everything the page says about not
 taking their data. Do not swap in Google Analytics — it needs a banner, and
 several German data protection authorities have ruled against its use.

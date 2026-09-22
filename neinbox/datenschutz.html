@@ -5,8 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Datenschutzerklärung — Neinbox</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400&family=Source+Serif+4:wght@400&display=swap">
 <style>
+  /* Fonts are served from this site. Nothing is fetched from Google,
+     so no visitor IP is transmitted to a third party for typography. */
+  @font-face {
+    font-family: 'Archivo';
+    font-style: normal;
+    font-weight: 500 700;
+    font-display: swap;
+    src: url('fonts/archivo-500-700-normal-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face {
+    font-family: 'Archivo';
+    font-style: normal;
+    font-weight: 500 700;
+    font-display: swap;
+    src: url('fonts/archivo-500-700-normal-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/ibm-plex-mono-400-normal-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/ibm-plex-mono-400-normal-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('fonts/ibm-plex-mono-500-normal-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('fonts/ibm-plex-mono-500-normal-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Source Serif 4';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/source-serif-4-400-italic-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face {
+    font-family: 'Source Serif 4';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/source-serif-4-400-italic-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: 'Source Serif 4';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/source-serif-4-400-normal-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face {
+    font-family: 'Source Serif 4';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/source-serif-4-400-normal-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
   :root {
     --ground: #E4E6E2; --paper: #FBFBF9; --paper-2: #F1F2EE;
     --ink: #1A1C19; --ink-2: #5E635C; --ink-3: #8E948B;
@@ -178,31 +260,21 @@
       taucht Ihre Datei in keiner einzigen Anfrage auf.
     </p>
 
-    <h2>5. Externe Programmbibliotheken</h2>
+    <h2>5. Programmbibliotheken</h2>
     <p>
       Zum Lesen von PDF- und DOCX-Dateien werden die Bibliotheken pdf.js und
-      JSZip benötigt. Diese werden vom Content Delivery Network
-      <b>cdnjs</b> (Cloudflare, Inc., USA) geladen. Dabei wird Ihre IP-Adresse
-      an Cloudflare übertragen. Der Abruf erfolgt erst, wenn Sie die
-      Lebenslauf-Funktion tatsächlich öffnen. Die Dateien selbst werden dorthin
-      nicht übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
+      JSZip benötigt. Beide werden <b>von diesem Server ausgeliefert</b> und
+      nicht von einem fremden Content Delivery Network geladen. Es findet
+      dabei keine Übermittlung an Dritte statt.
     </p>
 
     <h2>6. Schriftarten</h2>
-    <div class="note warn">
-      <b>ACHTUNG — HIER BESTEHT HANDLUNGSBEDARF.</b><br>
-      Die Seite lädt Schriftarten derzeit von Google Fonts. Dabei wird die
-      IP-Adresse jedes Besuchers an Google in den USA übertragen. Genau dafür
-      wurden in Deutschland tausende Seitenbetreiber abgemahnt (LG München I,
-      20.01.2022, Az. 3 O 17493/20). Die Schriften sollten lokal eingebunden
-      werden; dann entfällt dieser Abschnitt ersatzlos.
-    </div>
+    <h2>6. Schriftarten</h2>
     <p>
-      Diese Seite bindet Schriftarten von <b>Google Fonts</b> (Google Ireland
-      Limited bzw. Google LLC, USA) ein. Beim Aufruf wird Ihre IP-Adresse an
-      Google übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
-      <span class="fill">[NACH LOKALER EINBINDUNG DER SCHRIFTEN DIESEN
-      ABSCHNITT VOLLSTÄNDIG LÖSCHEN]</span>
+      Alle Schriftarten werden <b>von diesem Server ausgeliefert</b>. Es
+      besteht keine Verbindung zu Google Fonts oder einem anderen externen
+      Anbieter, und es wird keine IP-Adresse zu diesem Zweck an Dritte
+      übermittelt.
     </p>
 
     <h2>7. Lokale Speicherung im Browser</h2>
@@ -358,9 +430,9 @@
 
     <h2>Fonts and libraries</h2>
     <p>
-      Fonts are currently loaded from Google Fonts, and the pdf.js and JSZip
-      libraries from cdnjs (Cloudflare). Both transmit your IP address to those
-      providers. The libraries load only if you open the CV feature.
+      All fonts and the pdf.js and JSZip libraries are served from this site
+      itself. Nothing is fetched from Google Fonts or from a third-party CDN,
+      so no IP address is transmitted to anyone for those purposes.
     </p>
 
     <h2>Local storage</h2>
