@@ -1090,6 +1090,123 @@
   }
   @media (max-width: 380px) { .entry-row { grid-template-columns: 1fr; } }
 
+
+  /* ---------- the listing that is us ---------- */
+  .card.self { border-color: var(--seal); }
+  .card.self .card-firm { color: var(--seal); font-weight: 500; }
+  .card.self .queue { color: var(--seal); }
+
+  .filled {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--seal);
+    box-shadow: var(--shadow-lift);
+    padding: 26px 24px 22px;
+    overflow: hidden;
+  }
+  .filled .eyebrow { color: var(--seal); }
+  .filled h2 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -.02em;
+    margin: 12px 0 16px;
+    text-wrap: balance;
+  }
+  .filled p {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.62;
+    margin: 0 0 13px;
+  }
+  .filled .gloss {
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .filled-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 18px 0 4px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .filled-facts .row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    font-size: 13.5px;
+  }
+  .filled-facts dt {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    flex: none;
+  }
+  .filled-facts .leader {
+    flex: 1;
+    border-bottom: 1px dotted var(--rule);
+    transform: translateY(-3px);
+    min-width: 8px;
+  }
+  .filled-facts dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  .filled-facts .row.good dd { color: var(--seal); font-weight: 600; }
+
+  /* ---------- disclosure ---------- */
+  .letter.disclosure .stamp { border-color: var(--seal); color: var(--seal); }
+  .letter.disclosure .reason {
+    border-left-color: var(--seal);
+    background: rgba(36, 82, 122, .07);
+  }
+  :root[data-theme="dark"] .letter.disclosure .reason,
+  :root:not([data-theme="light"]) .letter.disclosure .reason {
+    background: rgba(123, 166, 212, .12);
+  }
+  .letter.disclosure .reason q {
+    quotes: none;
+    font-size: 17px;
+    line-height: 1.45;
+    font-weight: 600;
+    font-family: var(--sans);
+    letter-spacing: -.01em;
+  }
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin: 0 0 16px;
+  }
+  @media (max-width: 420px) { .split { grid-template-columns: 1fr; } }
+  .split > div { padding: 13px 15px; }
+  .split > div + div { border-left: 1px solid var(--rule); }
+  @media (max-width: 420px) {
+    .split > div + div { border-left: 0; border-top: 1px solid var(--rule); }
+  }
+  .split h4 {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    color: var(--ink-3);
+  }
+  .split .col-machine h4 { color: var(--stamp); }
+  .split .col-human h4 { color: var(--seal); }
+  .split ul { margin: 0; padding-left: 16px; }
+  .split li {
+    font-family: var(--serif);
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 5px;
+  }
+
   .colophon {
     margin-top: 26px;
     padding-top: 14px;
@@ -1369,6 +1486,85 @@
       </div>
     </section>
 
+
+    <!-- ============ THE ONE JOB THAT GOT FILLED ============ -->
+    <section id="screenFilled" hidden>
+      <div class="filled">
+        <p class="eyebrow" id="flEyebrow">Vorgang abgeschlossen · keine Bewerbung möglich</p>
+        <h2 id="flHead">Diese Stelle ist bereits besetzt.</h2>
+        <p id="flBody">—</p>
+        <p class="gloss" id="flGloss">—</p>
+
+        <dl class="filled-facts" id="flFacts"></dl>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="btnFilledNext" type="button">
+          <span id="flNextLabel">Weiter bewerben</span>
+          <small id="flNextHint">Bei den anderen</small>
+        </button>
+        <button class="btn apply" id="btnFilledDisclosure" type="button">
+          <span id="flDiscLabel">Offenlegung lesen</span>
+          <small id="flDiscHint">Wie diese Seite gebaut wurde</small>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ DISCLOSURE ============ -->
+    <section id="screenDisclosure" hidden>
+      <article class="letter disclosure">
+        <div class="letter-head">
+          <div class="from" id="dcFrom">Neinbox<br>Der Betreiber</div>
+          <div class="letter-meta">
+            <span id="dcCity">Berlin,</span> <span id="dcDate">September 2026</span><br>
+            <span id="dcRef">Offenlegung 1 von 1</span>
+          </div>
+        </div>
+
+        <p class="betreff" id="dcBetreff">Wer diese Seite geschrieben hat</p>
+
+        <p id="dcP1">—</p>
+        <p id="dcP2">—</p>
+
+        <div class="split">
+          <div class="col-machine">
+            <h4 id="dcMachineH">Die Maschine hat</h4>
+            <ul id="dcMachineList"></ul>
+          </div>
+          <div class="col-human">
+            <h4 id="dcHumanH">Der Mensch hat</h4>
+            <ul id="dcHumanList"></ul>
+          </div>
+        </div>
+
+        <p id="dcP3">—</p>
+
+        <blockquote class="reason">
+          <q id="dcPunch">—</q>
+          <span class="gloss" id="dcPunchGloss">—</span>
+        </blockquote>
+
+        <p id="dcP4">—</p>
+
+        <div class="sig-row">
+          <div class="sig">
+            <div class="name" id="dcSig">Lucas Fortes da Silva</div>
+            <div class="dept"><span id="dcDept">Berlin · arbeitssuchend</span></div>
+          </div>
+          <div class="stamp"><span id="dcStampWord">Offenlegung</span><em id="dcStampDate">22.09.2026</em></div>
+        </div>
+
+        <p class="disclaimer" id="dcFoot"></p>
+      </article>
+
+      <div class="controls">
+        <button class="btn apply wide" id="btnDiscBack" type="button">
+          <span id="dcBackLabel">Zurück zu den Stellen</span>
+          <small id="dcBackHint">Die sind noch offen</small>
+        </button>
+      </div>
+    </section>
+
     <!-- ============ PENDING ============ -->
     <section id="screenPending" class="pending" hidden>
       <p class="eyebrow" id="pendingEyebrow">Eingangsbestätigung · automatisch generiert</p>
@@ -1454,6 +1650,10 @@
             <span id="truthStoryLabel">Ihre Geschichte erzählen</span>
             <small id="truthStoryHint">Echte Erfahrungen, echte Daten</small>
           </button>
+          <button class="btn wide" id="btnTruthDisclosure" type="button">
+            <span id="truthDiscLabel">Wer diese Seite geschrieben hat</span>
+            <small id="truthDiscHint">Offenlegung</small>
+          </button>
         </div>
       </div>
     </section>
@@ -1484,6 +1684,56 @@
       modeDesc: "Statt einer Absage erhalten Sie, was Sie sonst erhalten: nichts. 90 Tage in 9 Sekunden.",
       lblSent: "Bewerbungen",
       lblReplies: "Antworten",
+      flEyebrow: "Vorgang abgeschlossen · keine Bewerbung möglich",
+      flHead: "Diese Stelle ist bereits besetzt.",
+      flBody: "Besetzt von der Software, die diese Seite gebaut hat. Sie hat sich nicht beworben. Sie musste kein Deutsch können. Sie hat kein Anschreiben geschrieben, keine Lücke im Lebenslauf erklärt und auf niemanden gewartet.",
+      flGloss: "Filled by the software that built this site. It didn't apply. It didn't need German. It never waited for anyone.",
+      flFacts: [
+        ["Bewerbungen", "1", false],
+        ["Deutschkenntnisse verlangt", "keine", true],
+        ["Berufserfahrung verlangt", "keine", true],
+        ["Wartezeit auf Antwort", "0 Tage", true],
+        ["Absagen erhalten", "0", true],
+        ["Vom Menschen beauftragt", "ja", false]
+      ],
+      flNext: "Weiter bewerben",
+      flNextHint: "Bei den anderen",
+      flDisc: "Offenlegung lesen",
+      flDiscHint: "Wie diese Seite gebaut wurde",
+      truthDisc: "Wer diese Seite geschrieben hat",
+      truthDiscHint: "Offenlegung",
+      dcFrom: "Neinbox<br>Der Betreiber",
+      dcCity: "Berlin,",
+      dcDate: "September 2026",
+      dcRef: "Offenlegung 1 von 1",
+      dcBetreff: "Wer diese Seite geschrieben hat",
+      dcP1: "Sehr geehrte:r Leser:in, bevor Sie weiterlesen, sollten Sie wissen, womit Sie es hier zu tun haben. Diese Seite wurde nicht von Hand getippt. Der Code stammt von einer KI — Claude, von Anthropic. Sechs Arbeitsschritte, fünf Tage, rund 3.200 Zeilen. Das Repository ist öffentlich, und in jedem einzelnen Commit steht es dran.",
+      dcP2: "Wir sagen das nicht, weil es uns peinlich wäre. Wir sagen es, weil es der letzte fehlende Beweis ist.",
+      dcMachineH: "Die Maschine hat",
+      dcMachineList: [
+        "den Code geschrieben",
+        "die Absagen formuliert",
+        "die Schriftarten eingebunden",
+        "in fünf Tagen erledigt, wofür ein Mensch Wochen gebraucht hätte"
+      ],
+      dcHumanH: "Der Mensch hat",
+      dcHumanList: [
+        "jede Entscheidung getroffen",
+        "gewusst, wie sich das anfühlt",
+        "die Wut mitgebracht",
+        "seit Monaten keine Antwort bekommen"
+      ],
+      dcP3: "Genau das ist der Punkt, um den es hier geht. Eine Maschine hat Ihre Bewerbung gelesen. Eine Maschine hat die Absage geschrieben. Wahrscheinlich hat eine Maschine auch Ihr Anschreiben verfasst. Auf keiner Seite des Vorgangs war jemand anwesend — und trotzdem ist das Ergebnis schlechter als früher: langsamer, stiller, demütigender.",
+      dcPunch: "Ich habe eine Maschine benutzt, um eine Seite darüber zu bauen, dass Firmen Maschinen benutzen, um uns alle zu ignorieren. Das ist kein Widerspruch. Das ist verdammt noch mal der Punkt.",
+      dcPunchGloss: "I used a machine to build a site about companies using machines to ignore all of us. That isn't a contradiction. That's the fucking point.",
+      dcP4: "Die Unternehmen hier sind erfunden. Die Absagen sind erfunden. Die Wut nicht. Und die Erfahrungsberichte, die Sie uns schicken, werden es auch nicht sein.",
+      dcSig: "Lucas Fortes da Silva",
+      dcDept: "Berlin · arbeitssuchend",
+      dcStampWord: "Offenlegung",
+      dcFoot: "Stand: 22.09.2026 · Quellcode öffentlich einsehbar · Jede Zeile dieser Seite wurde von einer KI geschrieben, jede Entscheidung von einem Menschen getroffen.",
+      dcBack: "Zurück zu den Stellen",
+      dcBackHint: "Die sind noch offen",
+      disclosureLink: "Offenlegung",
       lblGhosted: "Geghostet",
       lblInvites: "Einladungen",
       lblTime: "⌀ Antwortzeit",
@@ -1564,7 +1814,9 @@
         skills: "Fähigkeiten erkannt",
         used: "Davon berücksichtigt",
         jobs: "Stellen abgeglichen",
-        human: "Von einem Menschen gelesen"
+        human: "Von einem Menschen gelesen",
+        machineRead: "Von einer Maschine gelesen",
+        machineWrote: "Von einer Maschine geschrieben"
       },
       yearsVal: function (y) { return y + " Jahre"; },
       rpNote: "Die Auswahl erfolgte nach Verfügbarkeit, nicht nach Eignung. Das ist branchenüblich.",
@@ -1648,6 +1900,56 @@
       modeDesc: "Instead of a rejection you get what you normally get: nothing. 90 days in 9 seconds.",
       lblSent: "Applications",
       lblReplies: "Replies",
+      flEyebrow: "Case closed · no application possible",
+      flHead: "This position is already filled.",
+      flBody: "Filled by the software that built this site. It didn't apply. It didn't need German. It wrote no cover letter, explained no gap in its CV, and waited for nobody.",
+      flGloss: "Besetzt von der Software, die diese Seite gebaut hat. Sie musste kein Deutsch können. Sie hat auf niemanden gewartet.",
+      flFacts: [
+        ["Applications", "1", false],
+        ["German required", "none", true],
+        ["Experience required", "none", true],
+        ["Time spent waiting", "0 days", true],
+        ["Rejections received", "0", true],
+        ["Commissioned by a human", "yes", false]
+      ],
+      flNext: "Keep applying",
+      flNextHint: "To the other ones",
+      flDisc: "Read the disclosure",
+      flDiscHint: "How this site was built",
+      truthDisc: "Who wrote this site",
+      truthDiscHint: "Disclosure",
+      dcFrom: "Neinbox<br>The operator",
+      dcCity: "Berlin,",
+      dcDate: "September 2026",
+      dcRef: "Disclosure 1 of 1",
+      dcBetreff: "Who wrote this site",
+      dcP1: "Dear reader, before you go further you should know what you are dealing with. This site was not typed by hand. The code was written by an AI — Claude, made by Anthropic. Six working sessions, five days, around 3,200 lines. The repository is public and every single commit says so.",
+      dcP2: "We are not telling you this because it embarrasses us. We are telling you because it is the last missing piece of evidence.",
+      dcMachineH: "The machine",
+      dcMachineList: [
+        "wrote the code",
+        "drafted the rejections",
+        "installed the typefaces",
+        "did in five days what would have taken a person weeks"
+      ],
+      dcHumanH: "The human",
+      dcHumanList: [
+        "made every decision",
+        "knew how this feels",
+        "brought the anger",
+        "has not had a reply in months"
+      ],
+      dcP3: "That is the whole point of this place. A machine read your application. A machine wrote the rejection. A machine probably wrote your cover letter too. Nobody was present on either side of the transaction — and somehow the result is worse than it used to be: slower, quieter, more humiliating.",
+      dcPunch: "I used a machine to build a site about companies using machines to ignore all of us. That isn't a contradiction. That's the fucking point.",
+      dcPunchGloss: "Ich habe eine Maschine benutzt, um eine Seite darüber zu bauen, dass Firmen Maschinen benutzen, um uns alle zu ignorieren. Das ist kein Widerspruch. Das ist verdammt noch mal der Punkt.",
+      dcP4: "The companies here are invented. The rejections are invented. The anger is not. And neither will the experience reports be, when you send them.",
+      dcSig: "Lucas Fortes da Silva",
+      dcDept: "Berlin · looking for work",
+      dcStampWord: "Disclosure",
+      dcFoot: "As of 22.09.2026 · Source code publicly visible · Every line of this site was written by an AI. Every decision was made by a human.",
+      dcBack: "Back to the positions",
+      dcBackHint: "Those are still open",
+      disclosureLink: "Disclosure",
       lblGhosted: "Ghosted",
       lblInvites: "Invitations",
       lblTime: "⌀ Reply time",
@@ -1728,7 +2030,9 @@
         skills: "Skills recognised",
         used: "Skills actually used",
         jobs: "Positions matched",
-        human: "Read by a human"
+        human: "Read by a human",
+        machineRead: "Read by a machine",
+        machineWrote: "Written by a machine"
       },
       yearsVal: function (y) { return y + " years"; },
       rpNote: "Selection was made by availability, not suitability. This is industry standard.",
@@ -1808,6 +2112,15 @@
      ad demands near-native German — which is most of them.
      ======================================================================= */
   var JOBS = [
+    {
+      firm: "Neinbox", level: 0, tags: [], apps: 1, sig: "—", flagLang: false, isSelf: true,
+      de: { role: "Webentwicklung & Konzept (m/w/d)", place: "Berlin · remote · bereits besetzt",
+            pay: "—", exp: "Keine erforderlich", lang: "Keine Deutschkenntnisse erforderlich",
+            perks: "Kein Anschreiben, kein Gespräch, keine Wartezeit", posted: "vor 5 Tagen" },
+      en: { role: "Web development & concept (m/f/d)", place: "Berlin · remote · already filled",
+            pay: "—", exp: "None required", lang: "No German required",
+            perks: "No cover letter, no interview, no waiting", posted: "5 days ago" }
+    },
     {
       firm: "Nordlicht Retail Group GmbH", level: 4, tags: ["retail","marketing","brand","fmcg","handel","einzelhandel"], apps: 847, sig: "M. Brandhorst", flagLang: true,
       de: { role: "Senior Manager Retail Marketing (m/w/d)", place: "Berlin-Mitte · 4 Tage vor Ort",
@@ -2055,7 +2368,7 @@
    "lblGhosted","lblInvites","statInvites","lblTime","modeOdds","letterCard","pendingEyebrow","letterCity","letterSpeedLabel","letterP0",
    "letterP1","letterP2","letterP3","letterDisclaimer","nextLabel","nextHint",
    "ghostEyebrow","ghostNextLabel","ghostNextHint","truthEyebrow","restartLabel",
-   "restartHint","colophon","btnCv","cvEntryLabel","cvEntryHint","screenCv","screenAnalysis","screenReport","screenShred","cvEyebrow","cvHead","cvLede","dropzone","dropBig","dropSmall","fileInput","pasteToggle","pasteArea","privacyNote","btnCvBack","cvBackLabel","cvBackHint","btnCvGo","cvGoLabel","cvGoHint","anEyebrow","anHead","anLede","steps","rpEyebrow","rpHead","rpScoreLabel","rpScore","rpReadout","rpRecLabel","rpRecs","rpNote","btnShred","shredLabel","shredHint","btnRecDeck","recDeckLabel","recDeckHint","shEyebrow","shHead","shLede","shredStage","shredDoc","shredDocTitle","shredDocBody","blades","shredDone","shredMark","shredMarkSub","shredTruth","btnShredDone","shredDoneLabel","shredDoneHint","btnStory","storyEntryLabel","storyEntryHint","btnTruthStory","truthStoryLabel","truthStoryHint","screenStory","screenThanks","formNo","formSub","stHead","stLede","stPrivacy","stLegal","storyForm","fWhere","inWhere","lbWhere","optWhere","fIndustry","inIndustry","lbIndustry","fWaited","inWaited","lbWaited","fHeard","inHeard","lbHeard","fAdLang","inAdLang","lbAdLang","fCount","inCount","lbCount","optCount","fStory","inStory","lbStory","storyCount","storyErr","cPublish","lbPublish","dsPublish","cContact","lbContact","dsContact","cUpdates","lbUpdates","dsUpdates","fEmail","inEmail","lbEmail","emailErr","btnStoryBack","stBackLabel","stBackHint","btnStorySend","stSendLabel","stSendHint","thMark","thHead","thBody","thDemo","btnThanksBack","thBackLabel","thBackHint"].forEach(function (id) { el[id] = document.getElementById(id); });
+   "restartHint","colophon","btnCv","cvEntryLabel","cvEntryHint","screenCv","screenAnalysis","screenReport","screenShred","cvEyebrow","cvHead","cvLede","dropzone","dropBig","dropSmall","fileInput","pasteToggle","pasteArea","privacyNote","btnCvBack","cvBackLabel","cvBackHint","btnCvGo","cvGoLabel","cvGoHint","anEyebrow","anHead","anLede","steps","rpEyebrow","rpHead","rpScoreLabel","rpScore","rpReadout","rpRecLabel","rpRecs","rpNote","btnShred","shredLabel","shredHint","btnRecDeck","recDeckLabel","recDeckHint","shEyebrow","shHead","shLede","shredStage","shredDoc","shredDocTitle","shredDocBody","blades","shredDone","shredMark","shredMarkSub","shredTruth","btnShredDone","shredDoneLabel","shredDoneHint","btnStory","storyEntryLabel","storyEntryHint","btnTruthStory","truthStoryLabel","truthStoryHint","screenStory","screenThanks","formNo","formSub","stHead","stLede","stPrivacy","stLegal","storyForm","fWhere","inWhere","lbWhere","optWhere","fIndustry","inIndustry","lbIndustry","fWaited","inWaited","lbWaited","fHeard","inHeard","lbHeard","fAdLang","inAdLang","lbAdLang","fCount","inCount","lbCount","optCount","fStory","inStory","lbStory","storyCount","storyErr","cPublish","lbPublish","dsPublish","cContact","lbContact","dsContact","cUpdates","lbUpdates","dsUpdates","fEmail","inEmail","lbEmail","emailErr","btnStoryBack","stBackLabel","stBackHint","btnStorySend","stSendLabel","stSendHint","thMark","thHead","thBody","thDemo","btnThanksBack","thBackLabel","thBackHint","screenFilled","flEyebrow","flHead","flBody","flGloss","flFacts","btnFilledNext","flNextLabel","flNextHint","btnFilledDisclosure","flDiscLabel","flDiscHint","screenDisclosure","dcFrom","dcCity","dcDate","dcRef","dcBetreff","dcP1","dcP2","dcP3","dcP4","dcMachineH","dcMachineList","dcHumanH","dcHumanList","dcPunch","dcPunchGloss","dcSig","dcDept","dcStampWord","dcStampDate","dcFoot","btnDiscBack","dcBackLabel","dcBackHint","btnTruthDisclosure","truthDiscLabel","truthDiscHint"].forEach(function (id) { el[id] = document.getElementById(id); });
 
   function t() { return UI[state.lang]; }
   function jobText(job) { return job[state.lang]; }
@@ -2086,6 +2399,17 @@
   }
 
   /* ---------- helpers ---------- */
+  /* The deck is shuffled, but our own listing is placed deliberately: far
+     enough in that the joke has been set up, near enough that nobody misses it. */
+  function placeSelf(order) {
+    var selfIdx = JOBS.findIndex ? JOBS.findIndex(function (j) { return j.isSelf; })
+                                 : -1;
+    if (selfIdx < 0) return order;
+    var without = order.filter(function (i) { return i !== selfIdx; });
+    without.splice(Math.min(3, without.length), 0, selfIdx);
+    return without;
+  }
+
   function shuffled(n) {
     var a = [], i, j, tmp;
     for (i = 0; i < n; i++) a.push(i);
@@ -2119,10 +2443,13 @@
   function show(name) {
     ["screenDeck","screenPending","screenLetter","screenGhost","screenTruth",
      "screenCv","screenAnalysis","screenReport","screenShred",
-     "screenStory","screenThanks"]
+     "screenStory","screenThanks","screenFilled","screenDisclosure"]
       .forEach(function (k) { el[k].hidden = (k !== name); });
   }
   function currentJob() { return JOBS[state.order[state.idx % state.order.length]]; }
+  function realJobCount() {
+    return JOBS.filter(function (j) { return !j.isSelf; }).length;
+  }
 
   /* ---------- static copy ---------- */
   function renderChrome() {
@@ -2173,7 +2500,7 @@
     el.restartHint.textContent = c.restartHint;
     el.colophon.innerHTML = c.colophon +
       (analyticsOn ? "<br>" + c.colophonAnalytics : "") +
-      "<br>" + c.legalLinks;
+      "<br>" + '<a href="#" id="discFooterLink">' + c.disclosureLink + "</a> · " + c.legalLinks;
   }
 
   /* ---------- odds ---------- */
@@ -2225,7 +2552,7 @@
     for (var depth = 2; depth >= 0; depth--) {
       var job = JOBS[state.order[(state.idx + depth) % state.order.length]];
       var card = document.createElement("article");
-      card.className = "card" + (depth === 0 ? " is-top" : "");
+      card.className = "card" + (depth === 0 ? " is-top" : "") + (job.isSelf ? " self" : "");
       card.style.transform = "translateY(" + (depth * -8) + "px) scale(" + (1 - depth * 0.035) + ")";
       card.style.opacity = depth === 2 ? "0.55" : "1";
       card.innerHTML = cardMarkup(job);
@@ -2294,6 +2621,7 @@
         save();
         renderLedger();
         track("application-sent");
+        if (job.isSelf) { showFilled(job); return; }
         var outcome = drawOutcome();
         if (outcome === "ghost") startGhost(job);
         else startPending(job, outcome === "invite");
@@ -2452,6 +2780,7 @@
     renderChrome();
     renderCvChrome();
     renderStoryChrome();
+    renderDisclosure();
     renderLedger();
     renderDeck();
   }
@@ -2513,7 +2842,7 @@
   function scoreJobs(profile) {
     // Deliberately perverse: rank by how far BELOW the candidate a role sits,
     // the way a keyword matcher surfaces the jobs nobody else wants.
-    var ranked = JOBS.map(function (job) {
+    var ranked = JOBS.filter(function (job) { return !job.isSelf; }).map(function (job) {
       var overlap = (job.tags || []).filter(function (tg) {
         return profile.skills.indexOf(tg) !== -1;
       }).length;
@@ -2547,8 +2876,10 @@
       ["lead", String(pr.lead), false],
       ["skills", String(pr.skills.length), false],
       ["used", pr.usedWord ? "1" : "0", true],
-      ["jobs", String(JOBS.length), false],
-      ["human", "0", true]
+      ["jobs", String(realJobCount()), false],
+      ["human", "0", true],
+      ["machineRead", "1", true],
+      ["machineWrote", "1", true]
     ];
     el.rpReadout.textContent = "";
     rows.forEach(function (r) {
@@ -2676,7 +3007,7 @@
         var li = document.createElement("li");
         li.className = "done";
         li.innerHTML = '<span class="tick">&#10003;</span><span>' +
-          label.replace("{n}", JOBS.length) + '</span>';
+          label.replace("{n}", realJobCount()) + '</span>';
         el.steps.appendChild(li);
         if (i === c.steps.length - 1) {
           stepTimers.push(window.setTimeout(function () {
@@ -3097,6 +3428,75 @@
     });
   }
 
+
+  /* ---------- the one listing that is us ---------- */
+  function showFilled(job) {
+    var c = t();
+    el.flEyebrow.textContent = c.flEyebrow;
+    el.flHead.textContent = c.flHead;
+    el.flBody.textContent = c.flBody;
+    el.flGloss.textContent = c.flGloss;
+    el.flNextLabel.textContent = c.flNext;
+    el.flNextHint.textContent = c.flNextHint;
+    el.flDiscLabel.textContent = c.flDisc;
+    el.flDiscHint.textContent = c.flDiscHint;
+
+    el.flFacts.textContent = "";
+    c.flFacts.forEach(function (row) {
+      var div = document.createElement("div");
+      div.className = "row" + (row[2] ? " good" : "");
+      div.innerHTML = "<dt>" + row[0] + "</dt><span class=\"leader\"></span><dd>" + row[1] + "</dd>";
+      el.flFacts.appendChild(div);
+    });
+
+    track("self-listing");
+    show("screenFilled");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ---------- disclosure ---------- */
+  function renderDisclosure() {
+    var c = t();
+    el.dcFrom.innerHTML = c.dcFrom;
+    el.dcCity.textContent = c.dcCity;
+    el.dcDate.textContent = c.dcDate;
+    el.dcRef.textContent = c.dcRef;
+    el.dcBetreff.textContent = c.dcBetreff;
+    el.dcP1.textContent = c.dcP1;
+    el.dcP2.textContent = c.dcP2;
+    el.dcP3.textContent = c.dcP3;
+    el.dcP4.textContent = c.dcP4;
+    el.dcMachineH.textContent = c.dcMachineH;
+    el.dcHumanH.textContent = c.dcHumanH;
+    el.dcPunch.textContent = c.dcPunch;
+    el.dcPunchGloss.textContent = c.dcPunchGloss;
+    el.dcSig.textContent = c.dcSig;
+    el.dcDept.textContent = c.dcDept;
+    el.dcStampWord.textContent = c.dcStampWord;
+    el.dcFoot.textContent = c.dcFoot;
+    el.dcBackLabel.textContent = c.dcBack;
+    el.dcBackHint.textContent = c.dcBackHint;
+    el.truthDiscLabel.textContent = c.truthDisc;
+    el.truthDiscHint.textContent = c.truthDiscHint;
+
+    [[el.dcMachineList, c.dcMachineList], [el.dcHumanList, c.dcHumanList]]
+      .forEach(function (pair) {
+        pair[0].textContent = "";
+        pair[1].forEach(function (item) {
+          var li = document.createElement("li");
+          li.textContent = item;
+          pair[0].appendChild(li);
+        });
+      });
+  }
+
+  function openDisclosure() {
+    track("disclosure-read");
+    renderDisclosure();
+    show("screenDisclosure");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   /* ---------- wiring ---------- */
   el.btnApply.addEventListener("click", function () { commit(true); });
   el.btnSkip.addEventListener("click", function () { commit(false); });
@@ -3105,7 +3505,7 @@
   el.langDe.addEventListener("click", function () { setLang("de"); });
   el.langEn.addEventListener("click", function () { setLang("en"); });
   el.btnRestart.addEventListener("click", function () {
-    state.order = shuffled(JOBS.length);
+    state.order = placeSelf(shuffled(JOBS.length));
     state.idx = 0;
     renderDeck();
     show("screenDeck");
@@ -3176,6 +3576,16 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   el.btnStory.addEventListener("click", openStory);
+  el.btnFilledNext.addEventListener("click", function () {
+    renderDeck();
+    show("screenDeck");
+  });
+  el.btnFilledDisclosure.addEventListener("click", openDisclosure);
+  el.btnTruthDisclosure.addEventListener("click", openDisclosure);
+  el.btnDiscBack.addEventListener("click", function () {
+    renderDeck();
+    show("screenDeck");
+  });
   el.btnTruthStory.addEventListener("click", openStory);
   el.btnStoryBack.addEventListener("click", function () { show("screenDeck"); });
   el.btnThanksBack.addEventListener("click", function () { show("screenDeck"); });
@@ -3184,6 +3594,12 @@
   el.cContact.addEventListener("change", syncEmailField);
   el.cUpdates.addEventListener("change", syncEmailField);
 
+  document.addEventListener("click", function (e) {
+    if (e.target && e.target.id === "discFooterLink") {
+      e.preventDefault();
+      openDisclosure();
+    }
+  });
   el.realismMode.addEventListener("change", renderOdds);
   el.btnShred.addEventListener("click", runShredder);
   el.btnShredDone.addEventListener("click", function () {
@@ -3193,7 +3609,7 @@
   el.btnRecDeck.addEventListener("click", function () {
     // Reorder the deck to the "tailored" ranking, then drop into it.
     if (cvProfile) {
-      state.order = cvProfile.ranked.map(function (r) { return JOBS.indexOf(r.job); });
+      state.order = placeSelf(cvProfile.ranked.map(function (r) { return JOBS.indexOf(r.job); }));
       state.idx = 0;
       renderDeck();
     }
@@ -3211,12 +3627,13 @@
   load();
   initAnalytics();
   if (!localStorageHasLang() && navigatorPrefersEnglish()) state.lang = "en";
-  state.order = shuffled(JOBS.length);
+  state.order = placeSelf(shuffled(JOBS.length));
   el.caseNo.textContent = "2026-BE-" +
     String(4000 + Math.floor(Math.random() * 5999)).padStart(5, "0");
   renderChrome();
   renderCvChrome();
   renderStoryChrome();
+  renderDisclosure();
   renderLedger();
   renderDeck();
 
